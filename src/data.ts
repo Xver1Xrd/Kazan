@@ -24,6 +24,7 @@ export const TRIP = {
   to: 'Казань',
   departISO: '2026-07-24T12:25:00+03:00',
   arriveISO: '2026-07-24T14:30:00+03:00',
+  returnISO: '2026-07-28T21:20:00+03:00',
   fromAirport: 'Пулково (LED)',
   toAirport: 'Казань (KZN)',
 };

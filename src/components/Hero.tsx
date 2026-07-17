@@ -59,7 +59,7 @@ export default function Hero() {
           </span>
         </div>
         <p className="text-white/85 text-xs leading-relaxed mb-6 max-w-xs">
-          Три дня вдвоём: старый город, набережная Казанки, татарская кухня и места, которые запомнятся только нам.
+          Пять дней вдвоём, 24–28 июля: старый город, набережная Казанки, татарская кухня и места, которые запомнятся только нам.
         </p>
         <div className="flex items-center gap-4 flex-wrap">
           <Link
