@@ -50,9 +50,15 @@ export default function Countdown({ variant = 'light' }: Props) {
             day: 'numeric',
             month: 'long',
             timeZone: 'Europe/Moscow',
-          })}{' '}
-          в{' '}
+          })}
+          : вылет в{' '}
           {new Date(TRIP.departISO).toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Europe/Moscow',
+          })}
+          , в Казани в{' '}
+          {new Date(TRIP.arriveISO).toLocaleTimeString('ru-RU', {
             hour: '2-digit',
             minute: '2-digit',
             timeZone: 'Europe/Moscow',

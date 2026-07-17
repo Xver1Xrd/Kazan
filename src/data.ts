@@ -22,7 +22,8 @@ export const ICON_LINKS: IconLink[] = [{ href: '/#memories', label: 'Наши п
 export const TRIP = {
   from: 'Санкт-Петербург',
   to: 'Казань',
-  departISO: '2026-07-24T12:00:00+03:00',
+  departISO: '2026-07-24T12:25:00+03:00',
+  arriveISO: '2026-07-24T14:30:00+03:00',
   fromAirport: 'Пулково (LED)',
   toAirport: 'Казань (KZN)',
 };
