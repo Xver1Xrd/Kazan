@@ -76,6 +76,21 @@ export default function Countdown({ variant = 'light' }: Props) {
           </div>
         ))}
       </div>
+      <p className={`mt-3 text-xs ${subTone}`}>
+        Обратно —{' '}
+        {new Date(TRIP.returnISO).toLocaleDateString('ru-RU', {
+          day: 'numeric',
+          month: 'long',
+          timeZone: 'Europe/Moscow',
+        })}{' '}
+        в{' '}
+        {new Date(TRIP.returnISO).toLocaleTimeString('ru-RU', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'Europe/Moscow',
+        })}{' '}
+        из Казани
+      </p>
     </div>
   );
 }

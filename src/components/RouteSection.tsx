@@ -13,11 +13,11 @@ export default function RouteSection() {
             className="mt-3 text-3xl sm:text-4xl md:text-5xl font-normal text-[#1f2a1d] dark:text-white max-w-2xl"
             style={{ letterSpacing: '-0.02em' }}
           >
-            Три дня в Казани, шаг за шагом
+            Наш план, шаг за шагом
           </h2>
           <p className="mt-4 text-[#4b5b47] dark:text-white/60 max-w-xl">
-            Черновой план, который легко подвинуть — если где-то захочется задержаться подольше, просто сдвигаем вечер на
-            завтра.
+            Мы в городе с 24 по 28 июля: три насыщенных дня по плану — и ещё пара, чтобы просто гулять без расписания,
+            возвращаться в понравившиеся места и никуда не спешить.
           </p>
         </Reveal>
 
