@@ -32,12 +32,13 @@ export default function MapPage() {
           Все точки маршрута
         </h1>
         <p className="mt-4 text-[#4b5b47] dark:text-white/60 max-w-xl">
-          Клик по метке показывает название места. Свияжск и Раифа — за городом, остальное в пешей доступности от центра.
+          Клик по метке показывает название места. Всё в городе — большая часть в пешей доступности от центра, дальше всех
+          только аэропорт.
         </p>
       </div>
 
       <div className="h-[60vh] sm:h-[70vh] w-full">
-        <MapContainer center={MAP_CENTER} zoom={11} scrollWheelZoom className="w-full h-full">
+        <MapContainer center={MAP_CENTER} zoom={10} scrollWheelZoom className="w-full h-full">
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
