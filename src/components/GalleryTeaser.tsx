@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Camera } from 'lucide-react';
 import { GALLERY_IDEAS } from '../data';
 import Reveal from './Reveal';
+import SectionHeading from './SectionHeading';
 
 const TONE_CLASSES: Record<string, string> = {
   sunset: 'from-[#f4a26a] to-[#c9573f]',
@@ -17,31 +18,27 @@ export default function GalleryTeaser() {
 
   return (
     <section className="relative px-4 sm:px-6 md:px-10 py-20 sm:py-28 bg-white dark:bg-[#0e1712]">
-      <div className="max-w-5xl mx-auto">
-        <Reveal>
-          <span className="text-sm font-semibold text-[#4b7a5a] dark:text-[#a9cbad] uppercase tracking-wide">
-            Галерея
-          </span>
-          <h2
-            className="mt-3 text-3xl sm:text-4xl md:text-5xl font-normal text-[#1f2a1d] dark:text-white max-w-2xl"
-            style={{ letterSpacing: '-0.02em' }}
-          >
-            Кадры, которые мы ещё сделаем
-          </h2>
-          <p className="mt-4 text-[#4b5b47] dark:text-white/60 max-w-xl">
-            Поездка ещё впереди — здесь будут наши настоящие фото. А пока — список моментов, которые точно стоит поймать
-            в кадр.
-          </p>
-        </Reveal>
+      <div className="max-w-6xl mx-auto">
+        <SectionHeading
+          number="05"
+          label="Галерея"
+          title={
+            <>
+              Кадры, которые мы <span className="font-accent font-semibold text-[#4b7a5a] dark:text-[#a9cbad]">ещё сделаем</span>
+            </>
+          }
+          text="Поездка ещё впереди — здесь будут наши настоящие фото. А пока — список моментов, которые точно стоит поймать в кадр."
+        />
 
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
           {preview.map((idea, i) => (
             <Reveal key={idea.caption} delay={i * 0.06}>
               <div
-                className={`aspect-[3/4] rounded-2xl bg-gradient-to-br ${TONE_CLASSES[idea.tone]} flex items-end p-4 relative overflow-hidden`}
+                className={`group aspect-[3/4] rounded-3xl bg-gradient-to-br ${TONE_CLASSES[idea.tone]} flex items-end p-4 relative overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:rotate-[0.5deg]`}
               >
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 <Camera className="absolute top-4 left-4 w-4 h-4 text-white/70" />
-                <p className="text-white text-xs sm:text-sm font-medium leading-snug">{idea.caption}</p>
+                <p className="relative text-white text-xs sm:text-sm font-medium leading-snug">{idea.caption}</p>
               </div>
             </Reveal>
           ))}
