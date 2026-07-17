@@ -11,8 +11,18 @@ html, body, #root {
   margin: 0;
   font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  background-color: #ffffff;
+  transition: background-color 0.3s ease;
+}
+
+html.dark, html.dark body, html.dark #root {
+  background-color: #0e1712;
 }
 
 h1, h2 {
   font-family: 'Manrope', 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.leaflet-container {
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

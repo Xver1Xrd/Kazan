@@ -1,8 +1,13 @@
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Play, Sparkles } from 'lucide-react';
 import BoomerangVideoBg from '../BoomerangVideoBg';
+import Countdown from './Countdown';
 
 const BG_VIDEO =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_131941_d136af49-e243-493a-be14-6ff3f24e09e6.mp4';
+
+const easeOut = [0.22, 1, 0.36, 1] as const;
 
 export default function Hero() {
   return (
@@ -13,7 +18,10 @@ export default function Hero() {
 
       {/* Hero copy */}
       <div className="relative z-10 flex flex-col items-center text-center pt-28 sm:pt-32 md:pt-36 px-4 sm:px-6">
-        <h1
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: easeOut }}
           className="font-normal leading-[0.95] text-white text-[2rem] sm:text-4xl md:text-5xl lg:text-[4.75rem] xl:text-[5.25rem] max-w-5xl"
           style={{ letterSpacing: '-0.035em' }}
         >
@@ -22,10 +30,24 @@ export default function Hero() {
             путешествие
             <br className="hidden sm:block" /> в сердце Казани
           </span>
-        </h1>
-        <p className="mt-6 sm:mt-8 text-white/90 text-sm sm:text-base md:text-lg leading-relaxed max-w-md px-2">
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1, ease: easeOut }}
+          className="mt-6 sm:mt-8 text-white/90 text-sm sm:text-base md:text-lg leading-relaxed max-w-md px-2"
+        >
           Кремль и Кул-Шариф, прогулки по Баумана, чак-чак и закаты над Волгой — всё это мы увидим вместе.
-        </p>
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2, ease: easeOut }}
+          className="mt-8 sm:mt-10"
+        >
+          <Countdown variant="light" />
+        </motion.div>
       </div>
 
       {/* Bottom-left CTA block */}
@@ -40,28 +62,28 @@ export default function Hero() {
           Три дня вдвоём: старый город, набережная Казанки, татарская кухня и места, которые запомнятся только нам.
         </p>
         <div className="flex items-center gap-4 flex-wrap">
-          <a
-            href="#route"
+          <Link
+            to="/#route"
             className="bg-white hover:bg-white/90 text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm"
           >
             Смотреть план
-          </a>
-          <a href="#checklist" className="text-white text-sm font-medium hover:opacity-80 transition-opacity">
+          </Link>
+          <Link to="/#checklist" className="text-white text-sm font-medium hover:opacity-80 transition-opacity">
             Что возьмём с собой?
-          </a>
+          </Link>
         </div>
       </div>
 
       {/* Bottom-right video link */}
-      <a
-        href="#memories"
+      <Link
+        to="/#memories"
         className="hidden sm:flex absolute right-6 md:right-10 bottom-8 md:bottom-10 z-10 items-center gap-2 text-white/90 text-sm hover:text-white transition-colors"
       >
         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm">
           <Play className="w-3 h-3 fill-white text-white ml-0.5" />
         </span>
         <span className="font-medium">Что нас ждёт?</span>
-      </a>
+      </Link>
     </section>
   );
 }

@@ -4,19 +4,28 @@ export type NavLink = {
 };
 
 export const NAV_LINKS: NavLink[] = [
-  { href: '#route', label: 'Маршрут' },
-  { href: '#food', label: 'Где поесть' },
-  { href: '#checklist', label: 'Чек-лист' },
+  { href: '/#route', label: 'Маршрут' },
+  { href: '/#food', label: 'Где поесть' },
+  { href: '/#checklist', label: 'Чек-лист' },
+  { href: '/gallery', label: 'Галерея' },
+  { href: '/map', label: 'Карта' },
 ];
 
-export type IconLink = NavLink & {
-  icon: 'heart' | 'map-pin';
+export type IconLink = {
+  href: string;
+  label: string;
+  icon: 'heart';
 };
 
-export const ICON_LINKS: IconLink[] = [
-  { href: '#memories', label: 'Наши планы', icon: 'heart' },
-  { href: '#map', label: 'Карта', icon: 'map-pin' },
-];
+export const ICON_LINKS: IconLink[] = [{ href: '/#memories', label: 'Наши планы', icon: 'heart' }];
+
+export const TRIP = {
+  from: 'Санкт-Петербург',
+  to: 'Казань',
+  departISO: '2026-07-24T12:00:00+03:00',
+  fromAirport: 'Пулково (LED)',
+  toAirport: 'Казань (KZN)',
+};
 
 export type RouteStop = {
   time: string;
@@ -25,17 +34,21 @@ export type RouteStop = {
 };
 
 export type RouteDay = {
+  slug: string;
   day: string;
   title: string;
   summary: string;
+  tip: string;
   stops: RouteStop[];
 };
 
 export const ROUTE_DAYS: RouteDay[] = [
   {
+    slug: 'den-1',
     day: 'День 1',
     title: 'Кремль и сердце города',
     summary: 'Знакомимся с Казанью там, где сходятся её главные символы.',
+    tip: 'Билеты в Кремль и на башню Сююмбике лучше взять заранее онлайн — очередь в кассу летом бывает длинной.',
     stops: [
       {
         time: 'Утро',
@@ -58,9 +71,11 @@ export const ROUTE_DAYS: RouteDay[] = [
     ],
   },
   {
+    slug: 'den-2',
     day: 'День 2',
     title: 'Татарская слобода и набережные',
     summary: 'Уходим от туристического центра — туда, где Казань говорит на двух языках.',
+    tip: 'Вечером у Центра «Казан» включают подсветку — стоит подгадать время к закату.',
     stops: [
       {
         time: 'Утро',
@@ -83,9 +98,11 @@ export const ROUTE_DAYS: RouteDay[] = [
     ],
   },
   {
+    slug: 'den-3',
     day: 'День 3',
     title: 'За пределами города',
     summary: 'Если есть силы на ещё один день — стоит выехать за город.',
+    tip: 'Свияжск и Раифу в один день лучше совмещать с машиной или экскурсией — общественным транспортом между ними неудобно.',
     stops: [
       {
         time: 'Утро',
@@ -182,13 +199,33 @@ export const CHECKLIST: ChecklistItem[] = [
 export type MapLocation = {
   name: string;
   area: string;
+  lat: number;
+  lng: number;
 };
 
 export const MAP_LOCATIONS: MapLocation[] = [
-  { name: 'Казанский Кремль', area: 'Исторический центр' },
-  { name: 'Улица Баумана', area: 'Пешеходная зона' },
-  { name: 'Старо-Татарская слобода', area: 'Западнее центра, у озера Кабан' },
-  { name: 'Набережная Казанки и центр «Казан»', area: 'Северная набережная' },
-  { name: 'Остров-град Свияжск', area: '~30 км от города' },
-  { name: 'Раифский монастырь', area: '~30 км от города' },
+  { name: 'Казанский Кремль', area: 'Исторический центр', lat: 55.7989, lng: 49.1064 },
+  { name: 'Улица Баумана', area: 'Пешеходная зона', lat: 55.7887, lng: 49.1225 },
+  { name: 'Старо-Татарская слобода', area: 'У озера Кабан', lat: 55.7793, lng: 49.1104 },
+  { name: 'Набережная Казанки и центр «Казан»', area: 'Северная набережная', lat: 55.8157, lng: 49.1147 },
+  { name: 'Остров-град Свияжск', area: '~30 км от города', lat: 55.7936, lng: 48.6664 },
+  { name: 'Раифский монастырь', area: '~30 км от города', lat: 55.9186, lng: 48.7975 },
+];
+
+export const MAP_CENTER: [number, number] = [55.796, 49.106];
+
+export type GalleryIdea = {
+  caption: string;
+  tone: 'sunset' | 'green' | 'gold' | 'night' | 'water' | 'stone';
+};
+
+export const GALLERY_IDEAS: GalleryIdea[] = [
+  { caption: 'Мы вдвоём на смотровой у Кремля', tone: 'stone' },
+  { caption: 'Закат над Волгой с набережной', tone: 'sunset' },
+  { caption: 'Чак-чак крупным планом', tone: 'gold' },
+  { caption: 'Разноцветные дома Старо-Татарской слободы', tone: 'green' },
+  { caption: 'Подсветка центра «Казан» вечером', tone: 'night' },
+  { caption: 'Отражение мечети Кул-Шариф в озере Кабан', tone: 'water' },
+  { caption: 'Тихий двор Свияжска', tone: 'stone' },
+  { caption: 'Улица Баумана в огнях', tone: 'night' },
 ];

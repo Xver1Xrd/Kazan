@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Heart, MapPin, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, Menu, X } from 'lucide-react';
 import { NAV_LINKS, ICON_LINKS } from '../data';
+import ThemeToggle from './ThemeToggle';
 
-const ICONS = { heart: Heart, 'map-pin': MapPin };
+const ICONS = { heart: Heart };
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,49 +39,50 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-4 bg-white/70 backdrop-blur-md border-b border-white/60">
-        <a href="#top" className="flex items-center gap-2 text-[#2d3a2a]">
+      <nav className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-4 bg-white/70 dark:bg-[#14231a]/80 backdrop-blur-md border-b border-white/60 dark:border-white/10">
+        <Link to="/#top" className="flex items-center gap-2 text-[#2d3a2a] dark:text-white">
           <span className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight">
             Казань<sup className="text-[10px] sm:text-xs font-medium">’26</sup>
           </span>
-        </a>
+        </Link>
 
-        <div className="hidden lg:flex items-center gap-1 bg-white/70 rounded-full pl-6 pr-1 py-1">
+        <div className="hidden lg:flex items-center gap-1 bg-white/70 dark:bg-white/5 rounded-full pl-6 pr-1 py-1">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
-              className="text-sm px-3 py-2 font-medium text-[#4b5b47] hover:text-[#1f2a1d] transition-colors"
+              to={link.href}
+              className="text-sm px-3 py-2 font-medium text-[#4b5b47] dark:text-white/70 hover:text-[#1f2a1d] dark:hover:text-white transition-colors"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#route"
-            className="ml-2 bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-medium px-5 py-2.5 rounded-full transition-colors"
+          <Link
+            to="/#route"
+            className="ml-2 bg-[#1f2a1d] hover:bg-[#2a3827] dark:bg-white dark:hover:bg-white/90 text-white dark:text-[#1f2a1d] text-sm font-medium px-5 py-2.5 rounded-full transition-colors"
           >
             Поехали!
-          </a>
+          </Link>
         </div>
 
-        <div className="flex items-center gap-3 sm:gap-6 text-[#2d3a2a]">
+        <div className="flex items-center gap-3 sm:gap-5 text-[#2d3a2a] dark:text-white">
           {ICON_LINKS.map((link) => {
             const Icon = ICONS[link.icon];
             return (
-              <a
+              <Link
                 key={link.href}
-                href={link.href}
+                to={link.href}
                 className="hidden sm:flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
               >
                 <Icon className="w-4 h-4" />
                 {link.label}
-              </a>
+              </Link>
             );
           })}
+          <ThemeToggle />
           <button
             ref={toggleButtonRef}
             onClick={() => setMenuOpen((v) => !v)}
-            className="lg:hidden relative flex items-center justify-center w-10 h-10 rounded-full bg-white/70 backdrop-blur-md border border-white/60 text-[#1f2a1d] transition-all duration-300 hover:bg-white/90"
+            className="lg:hidden relative flex items-center justify-center w-10 h-10 rounded-full bg-white/70 dark:bg-white/10 backdrop-blur-md border border-white/60 dark:border-white/10 text-[#1f2a1d] dark:text-white transition-all duration-300 hover:bg-white/90 dark:hover:bg-white/20"
             aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}
             aria-expanded={menuOpen}
           >
@@ -114,25 +117,25 @@ export default function Nav() {
         role="dialog"
         aria-modal="true"
         aria-label="Меню навигации"
-        className={`lg:hidden fixed top-0 right-0 bottom-0 z-20 w-[85%] max-w-sm bg-white/95 backdrop-blur-xl shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`lg:hidden fixed top-0 right-0 bottom-0 z-20 w-[85%] max-w-sm bg-white/95 dark:bg-[#14231a]/95 backdrop-blur-xl shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full pt-24 px-8 pb-8">
           <div className="flex flex-col gap-1">
             {NAV_LINKS.map((link, i) => (
-              <a
+              <Link
                 key={link.href}
                 ref={i === 0 ? firstLinkRef : undefined}
-                href={link.href}
+                to={link.href}
                 onClick={closeMenu}
-                className={`text-2xl font-semibold text-[#1f2a1d] py-4 border-b border-[#1f2a1d]/10 transition-all duration-500 ${
+                className={`text-2xl font-semibold text-[#1f2a1d] dark:text-white py-4 border-b border-[#1f2a1d]/10 dark:border-white/10 transition-all duration-500 ${
                   menuOpen ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0'
                 }`}
                 style={{ transitionDelay: menuOpen ? `${150 + i * 70}ms` : '0ms' }}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -145,24 +148,24 @@ export default function Nav() {
             {ICON_LINKS.map((link) => {
               const Icon = ICONS[link.icon];
               return (
-                <a
+                <Link
                   key={link.href}
-                  href={link.href}
+                  to={link.href}
                   onClick={closeMenu}
-                  className="flex items-center gap-2 text-sm font-medium text-[#2d3a2a] sm:hidden"
+                  className="flex items-center gap-2 text-sm font-medium text-[#2d3a2a] dark:text-white/80 sm:hidden"
                 >
                   <Icon className="w-4 h-4" />
                   {link.label}
-                </a>
+                </Link>
               );
             })}
-            <a
-              href="#route"
+            <Link
+              to="/#route"
               onClick={closeMenu}
-              className="mt-2 text-center bg-[#1f2a1d] hover:bg-[#2a3827] text-white text-sm font-semibold px-5 py-3 rounded-full transition-colors"
+              className="mt-2 text-center bg-[#1f2a1d] hover:bg-[#2a3827] dark:bg-white dark:text-[#1f2a1d] text-white text-sm font-semibold px-5 py-3 rounded-full transition-colors"
             >
               Поехали!
-            </a>
+            </Link>
           </div>
         </div>
       </div>
