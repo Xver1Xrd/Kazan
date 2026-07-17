@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Play, Sparkles } from 'lucide-react';
+import { ChevronDown, Play, Sparkles } from 'lucide-react';
 import BoomerangVideoBg from '../BoomerangVideoBg';
 import Countdown from './Countdown';
 
@@ -9,46 +9,70 @@ const BG_VIDEO =
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
+const TITLE_WORDS: { text: string; accent?: boolean; italic?: boolean }[] = [
+  { text: 'Наше' },
+  { text: 'маленькое' },
+  { text: 'путешествие', accent: true, italic: true },
+  { text: 'в', accent: true },
+  { text: 'сердце', accent: true },
+  { text: 'Казани', accent: true },
+];
+
 export default function Hero() {
+  const { scrollY } = useScroll();
+  const bgScale = useTransform(scrollY, [0, 700], [1, 1.12]);
+  const copyY = useTransform(scrollY, [0, 600], [0, 120]);
+  const copyOpacity = useTransform(scrollY, [0, 450], [1, 0]);
+
   return (
-    <section id="top" className="relative w-full min-h-screen sm:h-screen overflow-hidden scroll-mt-16">
-      <BoomerangVideoBg src={BG_VIDEO} className="absolute inset-0 w-full h-full" />
+    <section id="top" className="relative w-full min-h-screen overflow-hidden scroll-mt-16">
+      <motion.div className="absolute inset-0" style={{ scale: bgScale }}>
+        <BoomerangVideoBg src={BG_VIDEO} className="absolute inset-0 w-full h-full" />
+      </motion.div>
       {/* Scrim: guarantees text legibility whether or not the video has loaded */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/55" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/15 to-black/60" />
 
       {/* Hero copy */}
-      <div className="relative z-10 flex flex-col items-center text-center pt-28 sm:pt-32 md:pt-36 px-4 sm:px-6">
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: easeOut }}
-          className="font-normal leading-[0.95] text-white text-[2rem] sm:text-4xl md:text-5xl lg:text-[4.75rem] xl:text-[5.25rem] max-w-5xl"
-          style={{ letterSpacing: '-0.035em' }}
+      <motion.div
+        style={{ y: copyY, opacity: copyOpacity }}
+        className="relative z-10 flex flex-col items-center text-center pt-28 sm:pt-32 md:pt-36 px-4 sm:px-6 pb-56 sm:pb-64"
+      >
+        <h1
+          className="font-normal leading-[1.02] text-white text-[2rem] sm:text-4xl md:text-5xl lg:text-[4.5rem] xl:text-[5rem] max-w-5xl"
+          style={{ letterSpacing: '-0.03em' }}
         >
-          Наше маленькое{' '}
-          <span className="text-[#c7e0cb]">
-            путешествие
-            <br className="hidden sm:block" /> в сердце Казани
-          </span>
-        </motion.h1>
+          {TITLE_WORDS.map((word, i) => (
+            <motion.span
+              key={word.text}
+              initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.7, delay: 0.08 * i, ease: easeOut }}
+              className={`inline-block mr-[0.28em] ${word.accent ? 'text-[#c7e0cb]' : ''} ${
+                word.italic ? 'font-accent font-semibold pr-[0.06em]' : ''
+              }`}
+            >
+              {word.text}
+            </motion.span>
+          ))}
+        </h1>
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: easeOut }}
+          transition={{ duration: 0.7, delay: 0.55, ease: easeOut }}
           className="mt-6 sm:mt-8 text-white/90 text-sm sm:text-base md:text-lg leading-relaxed max-w-md px-2"
         >
           Кремль и Кул-Шариф, прогулки по Баумана, чак-чак и закаты над Волгой — всё это мы увидим вместе.
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: easeOut }}
-          className="mt-8 sm:mt-10"
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.7, ease: easeOut }}
+          className="mt-9 sm:mt-12"
         >
-          <Countdown variant="light" />
+          <Countdown />
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Bottom-left CTA block */}
       <div className="absolute left-4 right-4 sm:right-auto sm:left-6 md:left-10 bottom-6 sm:bottom-8 md:bottom-10 z-10 max-w-sm">
@@ -59,12 +83,13 @@ export default function Hero() {
           </span>
         </div>
         <p className="text-white/85 text-xs leading-relaxed mb-6 max-w-xs">
-          Пять дней вдвоём, 24–28 июля: старый город, набережная Казанки, татарская кухня и места, которые запомнятся только нам.
+          Пять дней вдвоём, 24–28 июля: старый город, набережная Казанки, татарская кухня и места, которые запомнятся
+          только нам.
         </p>
         <div className="flex items-center gap-4 flex-wrap">
           <Link
             to="/#route"
-            className="bg-white hover:bg-white/90 text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm"
+            className="bg-white hover:bg-white/90 text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-all hover:scale-[1.03] active:scale-[0.98] shadow-sm"
           >
             Смотреть план
           </Link>
@@ -73,6 +98,17 @@ export default function Hero() {
           </Link>
         </div>
       </div>
+
+      {/* Scroll hint */}
+      <motion.div
+        style={{ opacity: copyOpacity }}
+        className="hidden sm:flex absolute left-1/2 -translate-x-1/2 bottom-8 z-10 flex-col items-center gap-1 text-white/60"
+      >
+        <span className="text-[10px] uppercase tracking-[0.25em]">листай</span>
+        <motion.span animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}>
+          <ChevronDown className="w-4 h-4" />
+        </motion.span>
+      </motion.div>
 
       {/* Bottom-right video link */}
       <Link

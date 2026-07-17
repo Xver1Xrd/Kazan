@@ -23,6 +23,56 @@ h1, h2 {
   font-family: 'Manrope', 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.font-accent {
+  font-family: 'Cormorant', Georgia, serif;
+  font-style: italic;
+}
+
+::selection {
+  background: #4b7a5a;
+  color: #ffffff;
+}
+
 .leaflet-container {
   font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Film-grain overlay applied once in App */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Marquee divider */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Dashed "tear line" inside the boarding pass */
+.pass-tear {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.35) 45%, transparent 45%);
+  background-size: 12px 1px;
+  background-repeat: repeat-x;
+  height: 1px;
 }

@@ -1,4 +1,5 @@
 import Hero from '../components/Hero';
+import Marquee from '../components/Marquee';
 import RouteSection from '../components/RouteSection';
 import FoodSection from '../components/FoodSection';
 import ChecklistSection from '../components/ChecklistSection';
@@ -10,6 +11,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Marquee />
       <RouteSection />
       <FoodSection />
       <ChecklistSection />
