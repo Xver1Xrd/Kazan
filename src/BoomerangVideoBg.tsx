@@ -5,10 +5,14 @@ type Props = {
   className?: string;
 };
 
+const MAX_WIDTH = 960;
+const MAX_FRAMES = 240; // ~8s at 30fps — caps memory use regardless of source video length
+
 export default function BoomerangVideoBg({ src, className }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const displayCanvasRef = useRef<HTMLCanvasElement>(null);
   const [framesReady, setFramesReady] = useState(false);
+  const [failed, setFailed] = useState(false);
   const framesRef = useRef<HTMLCanvasElement[]>([]);
 
   useEffect(() => {
@@ -18,7 +22,10 @@ export default function BoomerangVideoBg({ src, className }: Props) {
     const frames: HTMLCanvasElement[] = [];
     let capturing = true;
     let lastTime = -1;
-    const MAX_WIDTH = 960;
+
+    const stopCapturing = () => {
+      capturing = false;
+    };
 
     const captureFrame = () => {
       if (!capturing || video.readyState < 2) return;
@@ -38,8 +45,24 @@ export default function BoomerangVideoBg({ src, className }: Props) {
       canvas.height = h;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      ctx.drawImage(video, 0, 0, w, h);
+
+      try {
+        ctx.drawImage(video, 0, 0, w, h);
+      } catch {
+        // Tainted canvas (CORS) or other draw failure — bail out and let the
+        // native <video loop> keep playing instead of freezing the page.
+        stopCapturing();
+        return;
+      }
       frames.push(canvas);
+
+      if (frames.length >= MAX_FRAMES) {
+        stopCapturing();
+        if (frames.length > 0) {
+          framesRef.current = frames;
+          setFramesReady(true);
+        }
+      }
     };
 
     type VFCVideo = HTMLVideoElement & {
@@ -62,11 +85,16 @@ export default function BoomerangVideoBg({ src, className }: Props) {
     };
 
     const onEnded = () => {
-      capturing = false;
+      stopCapturing();
       if (frames.length > 0) {
         framesRef.current = frames;
         setFramesReady(true);
       }
+    };
+
+    const onError = () => {
+      stopCapturing();
+      setFailed(true);
     };
 
     const onLoaded = () => {
@@ -80,13 +108,15 @@ export default function BoomerangVideoBg({ src, className }: Props) {
 
     video.addEventListener('loadedmetadata', onLoaded);
     video.addEventListener('ended', onEnded);
+    video.addEventListener('error', onError);
     if (video.readyState >= 1) onLoaded();
 
     return () => {
-      capturing = false;
+      stopCapturing();
       cancelAnimationFrame(rafId);
       video.removeEventListener('loadedmetadata', onLoaded);
       video.removeEventListener('ended', onEnded);
+      video.removeEventListener('error', onError);
     };
   }, [src]);
 
@@ -129,17 +159,23 @@ export default function BoomerangVideoBg({ src, className }: Props) {
   }, [framesReady]);
 
   return (
-    <div className={className ?? 'absolute inset-0 w-full h-full'}>
-      <video
-        ref={videoRef}
-        src={src}
-        className="w-full h-full object-cover"
-        style={{ display: framesReady ? 'none' : 'block' }}
-        muted
-        playsInline
-        preload="auto"
-        crossOrigin="anonymous"
-      />
+    <div
+      className={className ?? 'absolute inset-0 w-full h-full'}
+      style={{ background: 'linear-gradient(135deg, #1f2a1d, #3d5638)' }}
+    >
+      {!failed && (
+        <video
+          ref={videoRef}
+          src={src}
+          className="w-full h-full object-cover"
+          style={{ display: framesReady ? 'none' : 'block' }}
+          muted
+          loop
+          playsInline
+          preload="auto"
+          crossOrigin="anonymous"
+        />
+      )}
       <canvas
         ref={displayCanvasRef}
         className="w-full h-full object-cover"
