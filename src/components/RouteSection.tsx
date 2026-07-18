@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { ROUTE_DAYS } from '../data';
 import Reveal from './Reveal';
 import SectionHeading from './SectionHeading';
+import TiltCard from './TiltCard';
 
 export default function RouteSection() {
   return (
@@ -21,7 +22,8 @@ export default function RouteSection() {
 
         <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {ROUTE_DAYS.map((day, i) => (
-            <Reveal key={day.slug} delay={(i % 3) * 0.08}>
+            <Reveal key={day.slug} delay={(i % 3) * 0.08} className="h-full">
+              <TiltCard max={5}>
               <Link
                 to={`/route/${day.slug}`}
                 className="group relative flex flex-col h-full rounded-3xl border border-black/5 dark:border-white/10 bg-[#fbfcfa] dark:bg-white/[0.03] p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#1f2a1d]/10 dark:hover:shadow-black/40 hover:border-[#4b7a5a]/30"
@@ -58,6 +60,7 @@ export default function RouteSection() {
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </span>
               </Link>
+              </TiltCard>
             </Reveal>
           ))}
         </div>

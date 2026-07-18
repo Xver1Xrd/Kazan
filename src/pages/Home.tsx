@@ -1,5 +1,6 @@
 import Hero from '../components/Hero';
 import Marquee from '../components/Marquee';
+import FlightSection from '../components/FlightSection';
 import RouteSection from '../components/RouteSection';
 import FoodSection from '../components/FoodSection';
 import ChecklistSection from '../components/ChecklistSection';
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <Hero />
       <Marquee />
+      <FlightSection />
       <RouteSection />
       <FoodSection />
       <ChecklistSection />

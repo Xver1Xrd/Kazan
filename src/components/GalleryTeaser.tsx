@@ -3,6 +3,7 @@ import { ArrowRight, Camera } from 'lucide-react';
 import { GALLERY_IDEAS } from '../data';
 import Reveal from './Reveal';
 import SectionHeading from './SectionHeading';
+import TiltCard from './TiltCard';
 
 const TONE_CLASSES: Record<string, string> = {
   sunset: 'from-[#f4a26a] to-[#c9573f]',
@@ -33,13 +34,14 @@ export default function GalleryTeaser() {
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
           {preview.map((idea, i) => (
             <Reveal key={idea.caption} delay={i * 0.06}>
-              <div
-                className={`group aspect-[3/4] rounded-3xl bg-gradient-to-br ${TONE_CLASSES[idea.tone]} flex items-end p-4 relative overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:rotate-[0.5deg]`}
-              >
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                <Camera className="absolute top-4 left-4 w-4 h-4 text-white/70" />
-                <p className="relative text-white text-xs sm:text-sm font-medium leading-snug">{idea.caption}</p>
-              </div>
+              <TiltCard max={10} glare>
+                <div
+                  className={`group aspect-[3/4] rounded-3xl bg-gradient-to-br ${TONE_CLASSES[idea.tone]} flex items-end p-4 relative overflow-hidden`}
+                >
+                  <Camera className="absolute top-4 left-4 w-4 h-4 text-white/70" />
+                  <p className="relative text-white text-xs sm:text-sm font-medium leading-snug">{idea.caption}</p>
+                </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
