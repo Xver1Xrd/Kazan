@@ -5,6 +5,7 @@ import BoomerangVideoBg from '../BoomerangVideoBg';
 import Countdown from './Countdown';
 import TiltCard from './TiltCard';
 import TodayCard from './TodayCard';
+import FlightProgressCard from './FlightProgressCard';
 import { getTripState } from '../trip';
 
 const BG_VIDEO =
@@ -67,6 +68,7 @@ export default function Hero() {
         >
           {trip.phase === 'before' &&
             'Кремль и Кул-Шариф, прогулки по Баумана, чак-чак и закаты над Волгой — всё это мы увидим вместе.'}
+          {trip.phase === 'flight' && 'Уже летим. Через пару часов — Казань.'}
           {trip.phase === 'during' && 'Мы здесь. Кремль, Баумана и чак-чак — всё происходит прямо сейчас.'}
           {trip.phase === 'after' &&
             'Это было прекрасно. Кремль, Баумана, закаты над Казанкой — теперь это наши общие воспоминания.'}
@@ -81,6 +83,11 @@ export default function Hero() {
           {trip.phase === 'before' && (
             <TiltCard max={6} glare>
               <Countdown />
+            </TiltCard>
+          )}
+          {trip.phase === 'flight' && (
+            <TiltCard max={6} glare>
+              <FlightProgressCard />
             </TiltCard>
           )}
           {trip.phase === 'during' && (

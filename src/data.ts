@@ -6,6 +6,7 @@ export type NavLink = {
 export const NAV_LINKS: NavLink[] = [
   { href: '/#route', label: 'Маршрут' },
   { href: '/#food', label: 'Где поесть' },
+  { href: '/stories', label: 'Истории' },
   { href: '/gallery', label: 'Галерея' },
   { href: '/map', label: 'Карта' },
 ];
