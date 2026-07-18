@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Heart } from 'lucide-react';
 import Reveal from './Reveal';
+import FloatingDecor from './FloatingDecor';
 import { celebrate } from '../trip';
 
 const PLANS = [
@@ -51,6 +52,8 @@ export default function MemoriesSection() {
         aria-hidden
         className="absolute -top-40 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] rounded-full bg-[#4b7a5a]/25 blur-3xl pointer-events-none"
       />
+      <FloatingDecor emoji="💚" className="top-28 left-[7%]" speed={55} />
+      <FloatingDecor emoji="✨" className="bottom-24 right-[9%]" speed={40} />
       <span
         aria-hidden
         className="absolute top-8 right-4 sm:right-10 text-[6rem] sm:text-[9rem] font-extrabold leading-none text-white/[0.04] select-none pointer-events-none"

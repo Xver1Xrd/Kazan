@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Heart, Menu, X } from 'lucide-react';
 import { NAV_LINKS, ICON_LINKS } from '../data';
 import ThemeToggle from './ThemeToggle';
+import Magnetic from './Magnetic';
 
 const ICONS = { heart: Heart };
 
@@ -68,12 +69,14 @@ export default function Nav() {
               {link.label}
             </Link>
           ))}
-          <Link
-            to="/#route"
-            className="ml-2 bg-[#1f2a1d] hover:bg-[#2a3827] dark:bg-white dark:hover:bg-white/90 text-white dark:text-[#1f2a1d] text-sm font-medium px-5 py-2.5 rounded-full transition-colors"
-          >
-            Поехали!
-          </Link>
+          <Magnetic className="ml-2">
+            <Link
+              to="/#route"
+              className="block bg-[#1f2a1d] hover:bg-[#2a3827] dark:bg-white dark:hover:bg-white/90 text-white dark:text-[#1f2a1d] text-sm font-medium px-5 py-2.5 rounded-full transition-colors"
+            >
+              Поехали!
+            </Link>
+          </Magnetic>
         </div>
 
         <div className="flex items-center gap-3 sm:gap-5 text-[#2d3a2a] dark:text-white">

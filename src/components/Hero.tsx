@@ -6,6 +6,7 @@ import Countdown from './Countdown';
 import TiltCard from './TiltCard';
 import TodayCard from './TodayCard';
 import FlightProgressCard from './FlightProgressCard';
+import Magnetic from './Magnetic';
 import { getTripState } from '../trip';
 
 const BG_VIDEO =
@@ -119,12 +120,14 @@ export default function Hero() {
           только нам.
         </p>
         <div className="flex items-center gap-4 flex-wrap">
-          <Link
-            to="/#route"
-            className="bg-white hover:bg-white/90 text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-all hover:scale-[1.03] active:scale-[0.98] shadow-sm"
-          >
-            Смотреть план
-          </Link>
+          <Magnetic>
+            <Link
+              to="/#route"
+              className="block bg-white hover:bg-white/90 text-[#1f2a1d] text-sm font-semibold px-6 py-3 rounded-full transition-colors shadow-sm"
+            >
+              Смотреть план
+            </Link>
+          </Magnetic>
           <Link to="/#food" className="text-white text-sm font-medium hover:opacity-80 transition-opacity">
             Где поесть?
           </Link>
