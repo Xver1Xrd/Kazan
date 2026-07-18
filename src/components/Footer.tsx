@@ -1,7 +1,22 @@
+import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Heart, Plane } from 'lucide-react';
 import { TRIP } from '../data';
 
 export default function Footer() {
+  const navigate = useNavigate();
+  const taps = useRef<number[]>([]);
+
+  // Тройной тап по сердечку в течение секунды открывает секретную страницу.
+  const onHeartClick = () => {
+    const now = Date.now();
+    taps.current = [...taps.current.filter((t) => now - t < 1000), now];
+    if (taps.current.length >= 3) {
+      taps.current = [];
+      navigate('/secret');
+    }
+  };
+
   return (
     <footer className="relative px-4 sm:px-6 md:px-10 pt-16 pb-10 bg-[#141f17] text-white overflow-hidden">
       <div
@@ -28,7 +43,9 @@ export default function Footer() {
 
         <p className="mt-10 flex items-center justify-center gap-1.5 text-xs text-white/40">
           Казань, 2026 — маленькое путешествие вдвоём
-          <Heart className="w-3 h-3 fill-[#a9cbad] text-[#a9cbad]" />
+          <span onClick={onHeartClick} className="inline-flex select-none">
+            <Heart className="w-3 h-3 fill-[#a9cbad] text-[#a9cbad]" />
+          </span>
         </p>
       </div>
     </footer>

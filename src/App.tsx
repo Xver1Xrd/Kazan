@@ -11,6 +11,7 @@ const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const MapPage = lazy(() => import('./pages/MapPage'));
 const StoriesPage = lazy(() => import('./pages/StoriesPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const SecretPage = lazy(() => import('./pages/SecretPage'));
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/stories" element={<StoriesPage />} />
+          <Route path="/secret" element={<SecretPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
