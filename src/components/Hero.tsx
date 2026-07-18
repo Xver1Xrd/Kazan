@@ -4,6 +4,8 @@ import { ChevronDown, Play, Sparkles } from 'lucide-react';
 import BoomerangVideoBg from '../BoomerangVideoBg';
 import Countdown from './Countdown';
 import TiltCard from './TiltCard';
+import TodayCard from './TodayCard';
+import { getTripState } from '../trip';
 
 const BG_VIDEO =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_131941_d136af49-e243-493a-be14-6ff3f24e09e6.mp4';
@@ -24,6 +26,7 @@ export default function Hero() {
   const bgScale = useTransform(scrollY, [0, 700], [1, 1.12]);
   const copyY = useTransform(scrollY, [0, 600], [0, 120]);
   const copyOpacity = useTransform(scrollY, [0, 450], [1, 0]);
+  const trip = getTripState();
 
   return (
     <section id="top" className="relative w-full min-h-screen overflow-hidden scroll-mt-16">
@@ -62,7 +65,11 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.55, ease: easeOut }}
           className="mt-6 sm:mt-8 text-white/90 text-sm sm:text-base md:text-lg leading-relaxed max-w-md px-2"
         >
-          Кремль и Кул-Шариф, прогулки по Баумана, чак-чак и закаты над Волгой — всё это мы увидим вместе.
+          {trip.phase === 'before' &&
+            'Кремль и Кул-Шариф, прогулки по Баумана, чак-чак и закаты над Волгой — всё это мы увидим вместе.'}
+          {trip.phase === 'during' && 'Мы здесь. Кремль, Баумана и чак-чак — всё происходит прямо сейчас.'}
+          {trip.phase === 'after' &&
+            'Это было прекрасно. Кремль, Баумана, закаты над Казанкой — теперь это наши общие воспоминания.'}
         </motion.p>
 
         <motion.div
@@ -71,9 +78,24 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.7, ease: easeOut }}
           className="mt-9 sm:mt-12"
         >
-          <TiltCard max={6} glare>
-            <Countdown />
-          </TiltCard>
+          {trip.phase === 'before' && (
+            <TiltCard max={6} glare>
+              <Countdown />
+            </TiltCard>
+          )}
+          {trip.phase === 'during' && (
+            <TiltCard max={6} glare>
+              <TodayCard day={trip.day} />
+            </TiltCard>
+          )}
+          {trip.phase === 'after' && (
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-2 bg-white hover:bg-white/90 text-[#1f2a1d] text-sm font-semibold px-7 py-3.5 rounded-full transition-all hover:scale-[1.03] active:scale-[0.98] shadow-lg"
+            >
+              Смотреть наши фото ♥
+            </Link>
+          )}
         </motion.div>
       </motion.div>
 
@@ -96,8 +118,8 @@ export default function Hero() {
           >
             Смотреть план
           </Link>
-          <Link to="/#checklist" className="text-white text-sm font-medium hover:opacity-80 transition-opacity">
-            Что возьмём с собой?
+          <Link to="/#food" className="text-white text-sm font-medium hover:opacity-80 transition-opacity">
+            Где поесть?
           </Link>
         </div>
       </div>
