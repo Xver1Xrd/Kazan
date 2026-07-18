@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Lock, Unlock, Mail, MailOpen } from 'lucide-react';
+import { Heart, Lock, Unlock, Mail, MailOpen, RotateCcw } from 'lucide-react';
 import { SECRET_STAGES, SECRET_LETTER, STORAGE_KEY, HINT_INTERVAL_DAYS, hashAnswer } from '../secret';
 import { celebrate } from '../trip';
 
@@ -63,7 +63,17 @@ export default function SecretPage() {
   const [error, setError] = useState(false);
   const [checking, setChecking] = useState(false);
   const [hintOpen, setHintOpen] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
   const celebrated = useRef(false);
+
+  const resetProgress = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    celebrated.current = false;
+    setState({ firstVisit: Date.now(), stage: 0 });
+    setAnswer('');
+    setHintOpen(false);
+    setConfirmReset(false);
+  };
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -220,6 +230,35 @@ export default function SecretPage() {
             </AnimatePresence>
           </>
         )}
+
+        {/* Reset progress */}
+        <div className="mt-12 text-center">
+          {confirmReset ? (
+            <div className="inline-flex items-center gap-3 text-xs text-white/60">
+              <span>Сбросить весь прогресс квеста?</span>
+              <button
+                onClick={resetProgress}
+                className="rounded-full border border-red-400/40 text-red-300/90 px-4 py-1.5 hover:bg-red-400/10 transition-colors"
+              >
+                Да, сбросить
+              </button>
+              <button
+                onClick={() => setConfirmReset(false)}
+                className="rounded-full border border-white/15 px-4 py-1.5 hover:bg-white/5 transition-colors"
+              >
+                Оставить
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmReset(true)}
+              className="inline-flex items-center gap-1.5 text-xs text-white/35 hover:text-white/60 transition-colors"
+            >
+              <RotateCcw className="w-3 h-3" />
+              Сбросить прогресс
+            </button>
+          )}
+        </div>
       </div>
     </main>
   );
