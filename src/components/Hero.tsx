@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ChevronDown, Play, Sparkles } from 'lucide-react';
 import BoomerangVideoBg from '../BoomerangVideoBg';
 import Countdown from './Countdown';
+import TiltCard from './TiltCard';
 
 const BG_VIDEO =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_131941_d136af49-e243-493a-be14-6ff3f24e09e6.mp4';
@@ -70,7 +71,9 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.7, ease: easeOut }}
           className="mt-9 sm:mt-12"
         >
-          <Countdown />
+          <TiltCard max={6} glare>
+            <Countdown />
+          </TiltCard>
         </motion.div>
       </motion.div>
 
