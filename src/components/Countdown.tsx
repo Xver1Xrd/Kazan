@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Plane } from 'lucide-react';
 import { TRIP } from '../data';
+import { celebrate } from '../trip';
 
 function getTimeLeft(target: number) {
   const diff = Math.max(0, target - Date.now());
@@ -25,11 +26,21 @@ function msk(iso: string, opts: Intl.DateTimeFormatOptions) {
 export default function Countdown() {
   const target = new Date(TRIP.departISO).getTime();
   const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(target));
+  const wasDone = useRef(timeLeft.done);
 
   useEffect(() => {
     const id = setInterval(() => setTimeLeft(getTimeLeft(target)), 1000);
     return () => clearInterval(id);
   }, [target]);
+
+  // Fire confetti the moment the countdown hits zero with the page open
+  // (not when the page is merely opened after departure).
+  useEffect(() => {
+    if (timeLeft.done && !wasDone.current) {
+      celebrate();
+    }
+    wasDone.current = timeLeft.done;
+  }, [timeLeft.done]);
 
   return (
     <div className="w-[min(92vw,26rem)] rounded-3xl bg-[#101c14]/70 backdrop-blur-md border border-white/15 shadow-2xl shadow-black/30 text-left overflow-hidden">

@@ -3,7 +3,6 @@ import Marquee from '../components/Marquee';
 import FlightSection from '../components/FlightSection';
 import RouteSection from '../components/RouteSection';
 import FoodSection from '../components/FoodSection';
-import ChecklistSection from '../components/ChecklistSection';
 import MemoriesSection from '../components/MemoriesSection';
 import GalleryTeaser from '../components/GalleryTeaser';
 import MapTeaser from '../components/MapTeaser';
@@ -16,7 +15,6 @@ export default function Home() {
       <FlightSection />
       <RouteSection />
       <FoodSection />
-      <ChecklistSection />
       <MemoriesSection />
       <GalleryTeaser />
       <MapTeaser />

@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, ImagePlus } from 'lucide-react';
 import { GALLERY_IDEAS } from '../data';
+import { PHOTOS } from '../photos';
 import Reveal from '../components/Reveal';
+import Lightbox from '../components/Lightbox';
 
 const TONE_CLASSES: Record<string, string> = {
   sunset: 'from-[#f4a26a] to-[#c9573f]',
@@ -12,7 +15,64 @@ const TONE_CLASSES: Record<string, string> = {
   stone: 'from-[#a8a396] to-[#4b473d]',
 };
 
+function RealGallery() {
+  const [lightbox, setLightbox] = useState<number | null>(null);
+
+  return (
+    <>
+      <div className="mt-12 columns-2 md:columns-3 gap-4 [&>*]:mb-4 [&>*]:break-inside-avoid">
+        {PHOTOS.map((photo, i) => (
+          <Reveal key={photo.url} delay={(i % 6) * 0.05}>
+            <button
+              onClick={() => setLightbox(i)}
+              className="group relative block w-full overflow-hidden rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#4b7a5a]"
+            >
+              <img
+                src={photo.url}
+                alt={photo.caption}
+                loading="lazy"
+                className="w-full transition-transform duration-500 group-hover:scale-[1.04]"
+              />
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pt-8 pb-3 text-left text-white text-xs sm:text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                {photo.caption}
+              </span>
+            </button>
+          </Reveal>
+        ))}
+      </div>
+      <Lightbox photos={PHOTOS} index={lightbox} onClose={() => setLightbox(null)} onNavigate={setLightbox} />
+    </>
+  );
+}
+
+function PlaceholderGallery() {
+  return (
+    <div className="mt-12 columns-2 md:columns-3 gap-4 [&>*]:mb-4 [&>*]:break-inside-avoid">
+      {GALLERY_IDEAS.map((idea, i) => (
+        <Reveal key={idea.caption} delay={(i % 6) * 0.05}>
+          <div
+            className={`rounded-2xl bg-gradient-to-br ${TONE_CLASSES[idea.tone]} flex items-end p-4 relative overflow-hidden`}
+            style={{ aspectRatio: i % 3 === 0 ? '3 / 4' : i % 3 === 1 ? '1 / 1' : '4 / 5' }}
+          >
+            <Camera className="absolute top-4 left-4 w-4 h-4 text-white/70" />
+            <p className="text-white text-sm font-medium leading-snug">{idea.caption}</p>
+          </div>
+        </Reveal>
+      ))}
+
+      <Reveal delay={0.3}>
+        <div className="aspect-square rounded-2xl border-2 border-dashed border-[#1f2a1d]/15 dark:border-white/15 flex flex-col items-center justify-center text-center gap-2 p-4">
+          <ImagePlus className="w-6 h-6 text-[#4b7a5a] dark:text-[#a9cbad]" />
+          <p className="text-xs text-[#4b5b47] dark:text-white/50">Здесь будет наше фото</p>
+        </div>
+      </Reveal>
+    </div>
+  );
+}
+
 export default function GalleryPage() {
+  const hasPhotos = PHOTOS.length > 0;
+
   return (
     <motion.main
       initial={{ opacity: 0 }}
@@ -28,33 +88,15 @@ export default function GalleryPage() {
           className="mt-3 text-3xl sm:text-4xl md:text-5xl font-normal text-[#1f2a1d] dark:text-white max-w-2xl"
           style={{ letterSpacing: '-0.02em' }}
         >
-          Кадры, которые мы ещё сделаем
+          {hasPhotos ? 'Наши кадры из Казани' : 'Кадры, которые мы ещё сделаем'}
         </h1>
         <p className="mt-4 text-[#4b5b47] dark:text-white/60 max-w-xl">
-          Поездка ещё впереди, настоящих фото пока нет — это список моментов, которые точно стоит поймать в кадр. После
-          возвращения сюда встанут наши реальные снимки.
+          {hasPhotos
+            ? 'Собрано за пять дней вдвоём — клик по фото открывает его на весь экран.'
+            : 'Поездка ещё впереди, настоящих фото пока нет — это список моментов, которые точно стоит поймать в кадр. После возвращения сюда встанут наши реальные снимки.'}
         </p>
 
-        <div className="mt-12 columns-2 md:columns-3 gap-4 [&>*]:mb-4 [&>*]:break-inside-avoid">
-          {GALLERY_IDEAS.map((idea, i) => (
-            <Reveal key={idea.caption} delay={(i % 6) * 0.05}>
-              <div
-                className={`rounded-2xl bg-gradient-to-br ${TONE_CLASSES[idea.tone]} flex items-end p-4 relative overflow-hidden`}
-                style={{ aspectRatio: i % 3 === 0 ? '3 / 4' : i % 3 === 1 ? '1 / 1' : '4 / 5' }}
-              >
-                <Camera className="absolute top-4 left-4 w-4 h-4 text-white/70" />
-                <p className="text-white text-sm font-medium leading-snug">{idea.caption}</p>
-              </div>
-            </Reveal>
-          ))}
-
-          <Reveal delay={0.3}>
-            <div className="aspect-square rounded-2xl border-2 border-dashed border-[#1f2a1d]/15 dark:border-white/15 flex flex-col items-center justify-center text-center gap-2 p-4">
-              <ImagePlus className="w-6 h-6 text-[#4b7a5a] dark:text-[#a9cbad]" />
-              <p className="text-xs text-[#4b5b47] dark:text-white/50">Здесь будет наше фото</p>
-            </div>
-          </Reveal>
-        </div>
+        {hasPhotos ? <RealGallery /> : <PlaceholderGallery />}
       </div>
     </motion.main>
   );

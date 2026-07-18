@@ -77,10 +77,10 @@ export default function RouteDayPage() {
             </Link>
           ) : (
             <Link
-              to="/#checklist"
+              to="/gallery"
               className="flex items-center gap-1.5 text-sm font-medium text-[#1f2a1d] dark:text-white hover:gap-2.5 transition-all"
             >
-              К чек-листу
+              К галерее
               <ArrowRight className="w-4 h-4" />
             </Link>
           )}

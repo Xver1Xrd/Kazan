@@ -9,7 +9,7 @@ export default function MapTeaser() {
     <section className="relative px-4 sm:px-6 md:px-10 py-20 sm:py-28 bg-[#f6f8f5] dark:bg-[#14231a]">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
-          number="06"
+          number="05"
           label="Карта"
           title={
             <>

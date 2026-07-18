@@ -4,6 +4,7 @@ import { ROUTE_DAYS } from '../data';
 import Reveal from './Reveal';
 import SectionHeading from './SectionHeading';
 import TiltCard from './TiltCard';
+import WeatherStrip from './WeatherStrip';
 
 export default function RouteSection() {
   return (
@@ -20,7 +21,9 @@ export default function RouteSection() {
           text="Все пять дней, от прилёта до обратного рейса. Первый день расписан точно, остальные — черновик, который легко двигать: захотелось задержаться — сдвигаем и никуда не спешим."
         />
 
-        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <WeatherStrip />
+
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {ROUTE_DAYS.map((day, i) => (
             <Reveal key={day.slug} delay={(i % 3) * 0.08} className="h-full">
               <TiltCard max={5}>

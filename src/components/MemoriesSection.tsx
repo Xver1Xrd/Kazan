@@ -25,7 +25,7 @@ export default function MemoriesSection() {
         className="absolute top-8 right-4 sm:right-10 text-[6rem] sm:text-[9rem] font-extrabold leading-none text-white/[0.04] select-none pointer-events-none"
         style={{ fontFamily: "'Manrope', sans-serif" }}
       >
-        04
+        03
       </span>
 
       <div className="relative max-w-3xl mx-auto text-center">
