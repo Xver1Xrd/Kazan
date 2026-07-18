@@ -9,6 +9,8 @@ import Home from './pages/Home';
 const RouteDayPage = lazy(() => import('./pages/RouteDayPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const MapPage = lazy(() => import('./pages/MapPage'));
+const StoriesPage = lazy(() => import('./pages/StoriesPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
   return (
@@ -22,7 +24,8 @@ function App() {
           <Route path="/route/:slug" element={<RouteDayPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/map" element={<MapPage />} />
-          <Route path="*" element={<Home />} />
+          <Route path="/stories" element={<StoriesPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
       <Footer />

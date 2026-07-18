@@ -1,7 +1,7 @@
 import confetti from 'canvas-confetti';
 import { TRIP, ROUTE_DAYS } from './data';
 
-export type TripPhase = 'before' | 'during' | 'after';
+export type TripPhase = 'before' | 'flight' | 'during' | 'after';
 
 const MSK_OFFSET_MS = 3 * 3600_000; // Russia has no DST
 
@@ -10,21 +10,30 @@ function mskDayStamp(ms: number) {
   return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
 }
 
+export type TripState = {
+  phase: TripPhase;
+  /** 1-based trip day, meaningful while phase is 'during' */
+  day: number;
+  /** 0..1 outbound flight progress, meaningful while phase is 'flight' */
+  flightProgress: number;
+};
+
 /**
- * Where we are relative to the trip. `day` is 1-based (1..5) and only
- * meaningful while the phase is 'during'.
+ * Where we are relative to the trip.
  *
- * For previewing, the phase can be forced with ?phase=before|during|after
- * and the day with ?day=1..5.
+ * For previewing, force with ?phase=before|flight|during|after,
+ * ?day=1..5 and ?progress=0..1.
  */
-export function getTripState(now = Date.now()): { phase: TripPhase; day: number } {
-  let phase: TripPhase;
+export function getTripState(now = Date.now()): TripState {
   const depart = new Date(TRIP.departISO).getTime();
+  const arrive = new Date(TRIP.arriveISO).getTime();
   const ret = new Date(TRIP.returnISO).getTime();
 
+  let phase: TripPhase;
   if (now < depart) phase = 'before';
-  else if (now > ret) phase = 'after';
-  else phase = 'during';
+  else if (now <= arrive) phase = 'flight';
+  else if (now <= ret) phase = 'during';
+  else phase = 'after';
 
   let day = 1;
   if (phase === 'during') {
@@ -32,19 +41,25 @@ export function getTripState(now = Date.now()): { phase: TripPhase; day: number 
     day = Math.min(Math.max(day, 1), ROUTE_DAYS.length);
   }
 
+  let flightProgress = Math.min(Math.max((now - depart) / (arrive - depart), 0), 1);
+
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search);
     const forcedPhase = params.get('phase');
-    if (forcedPhase === 'before' || forcedPhase === 'during' || forcedPhase === 'after') {
+    if (forcedPhase === 'before' || forcedPhase === 'flight' || forcedPhase === 'during' || forcedPhase === 'after') {
       phase = forcedPhase;
     }
     const forcedDay = Number(params.get('day'));
     if (forcedDay >= 1 && forcedDay <= ROUTE_DAYS.length) {
       day = forcedDay;
     }
+    const forcedProgress = Number(params.get('progress'));
+    if (forcedProgress >= 0 && forcedProgress <= 1) {
+      flightProgress = forcedProgress;
+    }
   }
 
-  return { phase, day };
+  return { phase, day, flightProgress };
 }
 
 /** Two-sided confetti burst in the site's palette. */
