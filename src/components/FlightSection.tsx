@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { MoveRight, Plane, Timer } from 'lucide-react';
 import Reveal from './Reveal';
+import FloatingDecor from './FloatingDecor';
 
 const FlightGlobe = lazy(() => import('./FlightGlobe'));
 
@@ -32,6 +33,8 @@ export default function FlightSection() {
 
   return (
     <section className="relative px-4 sm:px-6 md:px-10 py-20 sm:py-28 bg-[#101c14] text-white overflow-hidden">
+      <FloatingDecor emoji="☁️" className="top-24 left-[6%]" speed={60} />
+      <FloatingDecor emoji="✈️" className="bottom-32 right-[7%]" speed={80} />
       <span
         aria-hidden
         className="absolute top-8 right-4 sm:right-10 text-[6rem] sm:text-[9rem] font-extrabold leading-none text-white/[0.04] select-none pointer-events-none"

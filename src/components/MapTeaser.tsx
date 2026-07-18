@@ -3,6 +3,7 @@ import { MapPin, ArrowRight } from 'lucide-react';
 import { MAP_LOCATIONS } from '../data';
 import Reveal from './Reveal';
 import SectionHeading from './SectionHeading';
+import Magnetic from './Magnetic';
 
 export default function MapTeaser() {
   return (
@@ -34,13 +35,15 @@ export default function MapTeaser() {
         </div>
 
         <Reveal delay={0.2}>
-          <Link
-            to="/map"
-            className="mt-10 inline-flex items-center gap-2 bg-[#1f2a1d] hover:bg-[#2a3827] dark:bg-white dark:text-[#1f2a1d] text-white text-sm font-semibold px-6 py-3 rounded-full transition-all hover:scale-[1.03] active:scale-[0.98]"
-          >
-            Открыть интерактивную карту
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <Magnetic className="mt-10">
+            <Link
+              to="/map"
+              className="inline-flex items-center gap-2 bg-[#1f2a1d] hover:bg-[#2a3827] dark:bg-white dark:text-[#1f2a1d] text-white text-sm font-semibold px-6 py-3 rounded-full transition-colors"
+            >
+              Открыть интерактивную карту
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Magnetic>
         </Reveal>
       </div>
     </section>

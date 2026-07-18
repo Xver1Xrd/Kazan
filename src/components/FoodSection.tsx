@@ -1,6 +1,7 @@
 import { FOOD_DISHES, FOOD_NOTE } from '../data';
 import Reveal from './Reveal';
 import SectionHeading from './SectionHeading';
+import FloatingDecor from './FloatingDecor';
 
 const DISH_EMOJI: Record<string, string> = {
   'Чак-чак': '🍯',
@@ -13,8 +14,10 @@ const DISH_EMOJI: Record<string, string> = {
 
 export default function FoodSection() {
   return (
-    <section id="food" className="relative scroll-mt-20 px-4 sm:px-6 md:px-10 py-20 sm:py-28 bg-[#f6f8f5] dark:bg-[#14231a]">
-      <div className="max-w-6xl mx-auto">
+    <section id="food" className="relative scroll-mt-20 px-4 sm:px-6 md:px-10 py-20 sm:py-28 bg-[#f6f8f5] dark:bg-[#14231a] overflow-hidden">
+      <FloatingDecor emoji="🍯" className="top-16 right-[8%]" speed={70} />
+      <FloatingDecor emoji="🥟" className="bottom-24 left-[5%]" speed={45} />
+      <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           number="02"
           label="Где поесть"

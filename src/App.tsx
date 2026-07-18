@@ -4,6 +4,7 @@ import Nav from './components/Nav';
 import Footer from './components/Footer';
 import ScrollManager from './components/ScrollManager';
 import ScrollProgress from './components/ScrollProgress';
+import LiveTitle from './components/LiveTitle';
 import Home from './pages/Home';
 
 const RouteDayPage = lazy(() => import('./pages/RouteDayPage'));
@@ -18,6 +19,7 @@ function App() {
     <div className="relative w-full grain">
       <ScrollManager />
       <ScrollProgress />
+      <LiveTitle />
       <Nav />
       <Suspense fallback={<div className="min-h-screen" />}>
         <Routes>
