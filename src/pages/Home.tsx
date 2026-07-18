@@ -6,6 +6,7 @@ import FoodSection from '../components/FoodSection';
 import MemoriesSection from '../components/MemoriesSection';
 import GalleryTeaser from '../components/GalleryTeaser';
 import MapTeaser from '../components/MapTeaser';
+import TravelSection from '../components/TravelSection';
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <MemoriesSection />
       <GalleryTeaser />
       <MapTeaser />
+      <TravelSection />
     </>
   );
 }

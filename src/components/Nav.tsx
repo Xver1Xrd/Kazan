@@ -8,9 +8,17 @@ const ICONS = { heart: Heart };
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -39,7 +47,11 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-4 bg-white/70 dark:bg-[#14231a]/80 backdrop-blur-md border-b border-white/60 dark:border-white/10">
+      <nav
+        className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 sm:py-4 bg-white/70 dark:bg-[#14231a]/80 backdrop-blur-md border-b border-white/60 dark:border-white/10 transition-shadow duration-300 ${
+          scrolled ? 'shadow-lg shadow-black/5 dark:shadow-black/30' : ''
+        }`}
+      >
         <Link to="/#top" className="flex items-center gap-2 text-[#2d3a2a] dark:text-white">
           <span className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight">
             Казань<sup className="text-[10px] sm:text-xs font-medium">’26</sup>
@@ -51,7 +63,7 @@ export default function Nav() {
             <Link
               key={link.href}
               to={link.href}
-              className="text-sm px-3 py-2 font-medium text-[#4b5b47] dark:text-white/70 hover:text-[#1f2a1d] dark:hover:text-white transition-colors"
+              className="relative text-sm px-3 py-2 font-medium text-[#4b5b47] dark:text-white/70 hover:text-[#1f2a1d] dark:hover:text-white transition-colors after:absolute after:left-3 after:right-3 after:bottom-0.5 after:h-[2px] after:rounded-full after:bg-current after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300"
             >
               {link.label}
             </Link>

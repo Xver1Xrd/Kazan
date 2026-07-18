@@ -2,6 +2,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Lightbulb } from 'lucide-react';
 import { ROUTE_DAYS } from '../data';
+import DayJournal from '../components/DayJournal';
 
 export default function RouteDayPage() {
   const { slug } = useParams();
@@ -54,6 +55,8 @@ export default function RouteDayPage() {
           <Lightbulb className="w-5 h-5 text-[#4b7a5a] dark:text-[#a9cbad] flex-shrink-0 mt-0.5" />
           <p className="text-sm text-[#4b5b47] dark:text-white/70 leading-relaxed">{day.tip}</p>
         </div>
+
+        <DayJournal slug={day.slug} />
 
         <div className="mt-14 flex items-center justify-between border-t border-black/5 dark:border-white/10 pt-6">
           {prev ? (
