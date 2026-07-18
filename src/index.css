@@ -87,6 +87,15 @@ h1, h2 {
   mix-blend-mode: normal;
 }
 
+/* While the wave runs, freeze all CSS transitions/animations so only the
+   clip-path sweep is moving — both snapshots must be static. */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+  animation-play-state: paused !important;
+}
+
 ::view-transition-old(root) {
   z-index: 1;
 }

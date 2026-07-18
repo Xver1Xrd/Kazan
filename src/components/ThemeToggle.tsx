@@ -18,19 +18,31 @@ export default function ThemeToggle() {
     }
 
     // Circular "wave" from the toggle button (View Transitions API).
-    const x = e.clientX;
-    const y = e.clientY;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
     const maxRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+    // Freeze every CSS transition for the duration of the wave: otherwise both
+    // snapshots keep animating their own colors and the sweep looks jerky.
+    const root = document.documentElement;
+    root.classList.add('theme-switching');
 
     const transition = doc.startViewTransition(() => {
       flushSync(() => toggleTheme());
     });
     transition.ready.then(() => {
-      document.documentElement.animate(
+      const wave = root.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${maxRadius}px at ${x}px ${y}px)`] },
-        { duration: 550, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
+        {
+          duration: 700,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          pseudoElement: '::view-transition-new(root)',
+        }
       );
+      wave.finished.finally(() => root.classList.remove('theme-switching'));
     });
+    transition.finished.finally(() => root.classList.remove('theme-switching'));
   };
 
   return (
