@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Droplets } from 'lucide-react';
 import Reveal from './Reveal';
 
@@ -58,7 +59,7 @@ export default function WeatherStrip() {
   return (
     <Reveal className="mt-10">
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        {days.map((day) => {
+        {days.map((day, i) => {
           const w = describe(day.code);
           const label = new Date(`${day.date}T12:00:00`).toLocaleDateString('ru-RU', {
             day: 'numeric',
@@ -66,9 +67,13 @@ export default function WeatherStrip() {
             weekday: 'short',
           });
           return (
-            <div
+            <motion.div
               key={day.date}
-              className="flex flex-col items-center rounded-2xl border border-black/5 dark:border-white/10 bg-[#fbfcfa] dark:bg-white/[0.03] px-3 py-4 text-center"
+              initial={{ opacity: 0, y: 16, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col items-center rounded-2xl border border-black/5 dark:border-white/10 bg-[#fbfcfa] dark:bg-white/[0.03] px-3 py-4 text-center transition-transform duration-300 hover:-translate-y-1"
             >
               <span className="text-[11px] uppercase tracking-wider text-[#4b5b47] dark:text-white/50">{label}</span>
               <span className="text-2xl mt-2" title={w.label}>
@@ -81,7 +86,7 @@ export default function WeatherStrip() {
                 <Droplets className="w-3 h-3" />
                 {day.rain}%
               </span>
-            </div>
+            </motion.div>
           );
         })}
       </div>

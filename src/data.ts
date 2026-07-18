@@ -245,6 +245,91 @@ export const MAP_LOCATIONS: MapLocation[] = [
 // Midpoint between the city cluster and the airport so both fit at the default zoom.
 export const MAP_CENTER: [number, number] = [55.72, 49.18];
 
+export type DayPath = {
+  day: number;
+  label: string;
+  color: string;
+  points: { name: string; lat: number; lng: number }[];
+};
+
+export const DAY_PATHS: DayPath[] = [
+  {
+    day: 1,
+    label: 'День 1 · прилёт',
+    color: '#c9573f',
+    points: [
+      { name: 'Аэропорт Казань (KZN)', lat: 55.6083, lng: 49.2787 },
+      { name: '«Тюбетей» на Баумана', lat: 55.7872, lng: 49.1232 },
+      { name: 'Кремлёвская набережная', lat: 55.8027, lng: 49.1129 },
+    ],
+  },
+  {
+    day: 2,
+    label: 'День 2 · Кремль',
+    color: '#4b7a5a',
+    points: [
+      { name: 'Казанский Кремль', lat: 55.7989, lng: 49.1064 },
+      { name: 'Улица Баумана', lat: 55.7887, lng: 49.1225 },
+    ],
+  },
+  {
+    day: 3,
+    label: 'День 3 · слобода',
+    color: '#a9772f',
+    points: [
+      { name: 'Старо-Татарская слобода', lat: 55.7793, lng: 49.1104 },
+      { name: 'Озеро Кабан', lat: 55.7768, lng: 49.1181 },
+    ],
+  },
+  {
+    day: 4,
+    label: 'День 4 · Казанка',
+    color: '#2f5266',
+    points: [
+      { name: 'Парк Чёрное озеро', lat: 55.7967, lng: 49.1147 },
+      { name: 'Набережная Казанки и центр «Казан»', lat: 55.8157, lng: 49.1147 },
+    ],
+  },
+  {
+    day: 5,
+    label: 'День 5 · вылет',
+    color: '#7b6ca8',
+    points: [
+      { name: 'Сувениры на Баумана', lat: 55.7887, lng: 49.1225 },
+      { name: 'Аэропорт Казань (KZN)', lat: 55.6083, lng: 49.2787 },
+    ],
+  },
+];
+
+export type TravelInfoItem = {
+  icon: 'plane' | 'train' | 'car' | 'home';
+  title: string;
+  lines: string[];
+};
+
+export const TRAVEL_INFO: TravelInfoItem[] = [
+  {
+    icon: 'plane',
+    title: 'Перелёт туда',
+    lines: ['24 июля · вылет 12:25 из Пулково (LED)', 'Посадка в Казани (KZN) в 14:30'],
+  },
+  {
+    icon: 'plane',
+    title: 'Перелёт обратно',
+    lines: ['28 июля · вылет 21:20 из Казани', 'В аэропорт выезжаем часа за три'],
+  },
+  {
+    icon: 'train',
+    title: 'Из аэропорта в город',
+    lines: ['Электричка до вокзала Казань-1 — около получаса', 'Такси до центра — примерно столько же'],
+  },
+  {
+    icon: 'home',
+    title: 'Квартира',
+    lines: ['Адрес и код от подъезда добавим сюда ближе к дате', 'Заселение — сразу после прилёта'],
+  },
+];
+
 export type GalleryIdea = {
   caption: string;
   tone: 'sunset' | 'green' | 'gold' | 'night' | 'water' | 'stone';

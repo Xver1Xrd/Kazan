@@ -60,8 +60,29 @@ h1, h2 {
   animation: marquee 28s linear infinite;
 }
 
+.marquee-host:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Footer plane drifting along the LED-KZN line */
+@keyframes plane-drift {
+  from { left: 6%; }
+  to { left: 94%; }
+}
+
+.plane-drift {
+  animation: plane-drift 5s ease-in-out infinite alternate;
+}
+
+:focus-visible {
+  outline: 2px solid #4b7a5a;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track {
+  .marquee-track,
+  .plane-drift {
     animation: none;
   }
   html {

@@ -17,7 +17,7 @@ export default function Marquee() {
   return (
     <div
       aria-hidden
-      className="relative overflow-hidden py-4 sm:py-5 bg-[#1f2a1d] dark:bg-[#0a120d] text-white/80 border-y border-white/10"
+      className="marquee-host relative overflow-hidden py-4 sm:py-5 bg-[#1f2a1d] dark:bg-[#0a120d] text-white/80 border-y border-white/10"
     >
       <div className="marquee-track flex w-max gap-6 sm:gap-10">
         <Row suffix="a" />

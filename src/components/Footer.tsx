@@ -31,7 +31,7 @@ export default function Footer() {
         <div className="mt-8 flex items-center justify-center gap-4 text-white/70 text-sm font-semibold">
           <span>LED</span>
           <span className="relative w-24 sm:w-40 pass-tear">
-            <Plane className="w-3.5 h-3.5 text-white/80 absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2" />
+            <Plane className="plane-drift w-3.5 h-3.5 text-white/80 absolute -translate-x-1/2 -translate-y-1/2 top-1/2" />
           </span>
           <span>KZN</span>
         </div>
