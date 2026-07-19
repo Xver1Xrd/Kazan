@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 
-type Props = {
+type VideoSource = {
   src: string;
+  type: string;
+};
+
+type Props = {
+  /** Ordered candidates — the browser picks the first playable one */
+  sources: VideoSource[];
   className?: string;
 };
 
 const MAX_WIDTH = 960;
 const MAX_FRAMES = 240; // ~8s at 30fps — caps memory use regardless of source video length
 
-export default function BoomerangVideoBg({ src, className }: Props) {
+export default function BoomerangVideoBg({ sources, className }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const displayCanvasRef = useRef<HTMLCanvasElement>(null);
   const [framesReady, setFramesReady] = useState(false);
@@ -27,9 +33,23 @@ export default function BoomerangVideoBg({ src, className }: Props) {
       capturing = false;
     };
 
+    const finishCapture = () => {
+      stopCapturing();
+      if (frames.length > 0) {
+        framesRef.current = frames;
+        setFramesReady(true);
+      }
+    };
+
     const captureFrame = () => {
       if (!capturing || video.readyState < 2) return;
       if (video.currentTime === lastTime) return;
+      // The <video> has `loop`, so 'ended' never fires — a jump back in
+      // currentTime means one full pass is captured.
+      if (video.currentTime < lastTime) {
+        finishCapture();
+        return;
+      }
       lastTime = video.currentTime;
 
       const vw = video.videoWidth;
@@ -57,11 +77,7 @@ export default function BoomerangVideoBg({ src, className }: Props) {
       frames.push(canvas);
 
       if (frames.length >= MAX_FRAMES) {
-        stopCapturing();
-        if (frames.length > 0) {
-          framesRef.current = frames;
-          setFramesReady(true);
-        }
+        finishCapture();
       }
     };
 
@@ -84,13 +100,7 @@ export default function BoomerangVideoBg({ src, className }: Props) {
       }
     };
 
-    const onEnded = () => {
-      stopCapturing();
-      if (frames.length > 0) {
-        framesRef.current = frames;
-        setFramesReady(true);
-      }
-    };
+    const onEnded = finishCapture;
 
     const onError = () => {
       stopCapturing();
@@ -118,7 +128,13 @@ export default function BoomerangVideoBg({ src, className }: Props) {
       video.removeEventListener('ended', onEnded);
       video.removeEventListener('error', onError);
     };
-  }, [src]);
+  }, [sources]);
+
+  // Frames are captured — the hidden looping <video> is no longer needed,
+  // stop it from decoding in the background.
+  useEffect(() => {
+    if (framesReady) videoRef.current?.pause();
+  }, [framesReady]);
 
   useEffect(() => {
     if (!framesReady) return;
@@ -138,8 +154,10 @@ export default function BoomerangVideoBg({ src, className }: Props) {
     let last = performance.now();
     const interval = 1000 / 30;
     let rafId = 0;
+    let running = false;
 
     const render = (now: number) => {
+      if (!running) return;
       if (now - last >= interval) {
         last = now;
         ctx.drawImage(frames[index], 0, 0);
@@ -154,8 +172,26 @@ export default function BoomerangVideoBg({ src, className }: Props) {
       }
       rafId = requestAnimationFrame(render);
     };
-    rafId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(rafId);
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      last = performance.now();
+      rafId = requestAnimationFrame(render);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(rafId);
+    };
+
+    // Animate only while the hero is actually on screen.
+    const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
+    io.observe(canvas);
+
+    return () => {
+      io.disconnect();
+      stop();
+    };
   }, [framesReady]);
 
   return (
@@ -166,7 +202,6 @@ export default function BoomerangVideoBg({ src, className }: Props) {
       {!failed && (
         <video
           ref={videoRef}
-          src={src}
           className="w-full h-full object-cover"
           style={{ display: framesReady ? 'none' : 'block' }}
           muted
@@ -174,7 +209,17 @@ export default function BoomerangVideoBg({ src, className }: Props) {
           playsInline
           preload="auto"
           crossOrigin="anonymous"
-        />
+        >
+          {sources.map((source, i) => (
+            <source
+              key={source.src}
+              src={source.src}
+              type={source.type}
+              // When the LAST candidate fails, no source is playable at all.
+              onError={i === sources.length - 1 ? () => setFailed(true) : undefined}
+            />
+          ))}
+        </video>
       )}
       <canvas
         ref={displayCanvasRef}

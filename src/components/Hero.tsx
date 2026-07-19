@@ -9,8 +9,13 @@ import FlightProgressCard from './FlightProgressCard';
 import Magnetic from './Magnetic';
 import { getTripState } from '../trip';
 
-const BG_VIDEO =
-  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_131941_d136af49-e243-493a-be14-6ff3f24e09e6.mp4';
+// Re-encoded to 1440px (original CloudFront file was 4K / 16.6 MB) and served
+// from our own origin so it survives if the external CDN link dies.
+// WebM/VP9 (~0.6 MB) first, H.264 MP4 (~1.1 MB) as the Safari fallback.
+const BG_SOURCES = [
+  { src: '/bg.webm', type: 'video/webm' },
+  { src: '/bg.mp4', type: 'video/mp4' },
+];
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -33,7 +38,7 @@ export default function Hero() {
   return (
     <section id="top" className="relative w-full min-h-screen overflow-hidden scroll-mt-16">
       <motion.div className="absolute inset-0" style={{ scale: bgScale }}>
-        <BoomerangVideoBg src={BG_VIDEO} className="absolute inset-0 w-full h-full" />
+        <BoomerangVideoBg sources={BG_SOURCES} className="absolute inset-0 w-full h-full" />
       </motion.div>
       {/* Scrim: guarantees text legibility whether or not the video has loaded */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/15 to-black/60" />
