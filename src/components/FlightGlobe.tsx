@@ -169,13 +169,15 @@ function Scene() {
   );
 }
 
-export default function FlightGlobe() {
+export default function FlightGlobe({ active = true }: { active?: boolean }) {
   return (
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [0, 0.15, 2.15], fov: 40 }}
       gl={{ alpha: true, antialias: true }}
       style={{ touchAction: 'pan-y' }}
+      // Stop the render loop entirely while the section is off-screen.
+      frameloop={active ? 'always' : 'never'}
     >
       <Scene />
     </Canvas>

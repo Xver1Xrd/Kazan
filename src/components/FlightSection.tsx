@@ -14,7 +14,9 @@ const STATS = [
 export default function FlightSection() {
   const hostRef = useRef<HTMLDivElement>(null);
   const [showGlobe, setShowGlobe] = useState(false);
+  const [globeActive, setGlobeActive] = useState(false);
 
+  // Mount once when the section approaches the viewport…
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
@@ -27,6 +29,17 @@ export default function FlightSection() {
       },
       { rootMargin: '300px' }
     );
+    io.observe(host);
+    return () => io.disconnect();
+  }, []);
+
+  // …and keep rendering only while it is actually visible.
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    const io = new IntersectionObserver(([entry]) => setGlobeActive(entry.isIntersecting), {
+      rootMargin: '100px',
+    });
     io.observe(host);
     return () => io.disconnect();
   }, []);
@@ -57,7 +70,7 @@ export default function FlightSection() {
         <div ref={hostRef} className="mt-6 h-[380px] sm:h-[480px] cursor-grab active:cursor-grabbing">
           {showGlobe && (
             <Suspense fallback={<div className="w-full h-full" />}>
-              <FlightGlobe />
+              <FlightGlobe active={globeActive} />
             </Suspense>
           )}
         </div>
