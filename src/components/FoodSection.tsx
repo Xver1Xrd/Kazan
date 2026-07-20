@@ -20,7 +20,7 @@ export default function FoodSection() {
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           number="02"
-          label="Где поесть"
+          label="Что поесть"
           title={
             <>
               Что <span className="font-accent font-semibold text-[#4b7a5a] dark:text-[#a9cbad]">обязательно</span>{' '}

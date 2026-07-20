@@ -134,7 +134,7 @@ export default function Hero() {
             </Link>
           </Magnetic>
           <Link to="/#food" className="text-white text-sm font-medium hover:opacity-80 transition-opacity">
-            Где поесть?
+            Что поесть?
           </Link>
         </div>
       </div>

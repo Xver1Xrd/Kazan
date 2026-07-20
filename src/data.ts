@@ -5,7 +5,7 @@ export type NavLink = {
 
 export const NAV_LINKS: NavLink[] = [
   { href: '/#route', label: 'Маршрут' },
-  { href: '/#food', label: 'Где поесть' },
+  { href: '/#food', label: 'Что поесть' },
   { href: '/stories', label: 'Истории' },
   { href: '/gallery', label: 'Галерея' },
   { href: '/map', label: 'Карта' },
@@ -309,6 +309,7 @@ export const DAY_PATHS: DayPath[] = [
     points: [
       { name: 'Аэропорт Казань (KZN)', lat: 55.6083, lng: 49.2787, emoji: '✈️', image: '/points/airport.jpg' },
       { name: '«Тюбетей» на Баумана', lat: 55.7872, lng: 49.1232, emoji: '🫓' },
+      { name: 'Квартира · Клары Цеткин, 11', lat: 55.7988, lng: 49.0613, emoji: '🏠' },
       { name: 'Кремлёвская набережная', lat: 55.8027, lng: 49.1129, emoji: '🌅', image: '/points/embankment.jpg' },
       { name: 'Дворец земледельцев', lat: 55.7988, lng: 49.1151, emoji: '🌳', image: '/points/palace.jpg' },
     ],
