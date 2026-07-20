@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Polyline, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { motion } from 'framer-motion';
@@ -9,10 +9,13 @@ function photoPin(color: string, point: DayPoint, tilt: number, showLabel: boole
   const label = showLabel
     ? `<div style="background:rgba(16,28,20,.92);color:#fff;font:600 12px/1.2 Inter,-apple-system,sans-serif;padding:8px 13px;border-radius:9999px;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.35)">${point.name}</div>`
     : '';
+  const inner = point.image
+    ? `<img src="${point.image}" alt="" style="width:100%;height:100%;object-fit:cover" />`
+    : `<span style="font-size:22px">${point.emoji}</span>`;
   return L.divIcon({
     className: '',
     html: `<div style="display:flex;align-items:center;gap:9px;width:max-content">
-      <div style="width:46px;height:46px;flex-shrink:0;border-radius:15px;background:linear-gradient(135deg,${color}e6,${color});border:2.5px solid #fff;box-shadow:0 5px 12px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:22px;transform:rotate(${tilt}deg)">${point.emoji}</div>
+      <div style="width:46px;height:46px;flex-shrink:0;border-radius:15px;overflow:hidden;background:linear-gradient(135deg,${color}e6,${color});border:2.5px solid #fff;box-shadow:0 5px 12px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;transform:rotate(${tilt}deg)">${inner}</div>
       ${label}
     </div>`,
     iconSize: [0, 0],
@@ -20,7 +23,7 @@ function photoPin(color: string, point: DayPoint, tilt: number, showLabel: boole
   });
 }
 
-/** Smooth quadratic curves through the day's stops instead of straight segments. */
+/** Smooth quadratic fallback through the stops (used until/if road routing fails). */
 function curvedPath(points: DayPoint[]): [number, number][] {
   const out: [number, number][] = [];
   for (let i = 0; i < points.length - 1; i++) {
@@ -40,16 +43,74 @@ function curvedPath(points: DayPoint[]): [number, number][] {
   return out;
 }
 
+const routeCache = new Map<string, [number, number][]>();
+
+/** Fetches a road-following route through the day's stops from the public OSRM demo. */
+function useRoadRoute(path: DayPath): [number, number][] {
+  const [route, setRoute] = useState<[number, number][]>(() => curvedPath(path.points));
+  const key = path.points.map((p) => `${p.lat},${p.lng}`).join(';');
+
+  useEffect(() => {
+    const cached = routeCache.get(key);
+    if (cached) {
+      setRoute(cached);
+      return;
+    }
+    if (path.points.length < 2) return;
+
+    const coords = path.points.map((p) => `${p.lng},${p.lat}`).join(';');
+    const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+    let cancelled = false;
+
+    fetch(url)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data) => {
+        const line = data?.routes?.[0]?.geometry?.coordinates as [number, number][] | undefined;
+        if (cancelled || !line?.length) return;
+        const latlngs = line.map(([lng, lat]) => [lat, lng] as [number, number]);
+        routeCache.set(key, latlngs);
+        setRoute(latlngs);
+      })
+      .catch(() => {
+        // OSRM unavailable — keep the curved fallback already in state.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [key, path.points]);
+
+  return route;
+}
+
+function DayRoute({ path, selected }: { path: DayPath; selected: boolean }) {
+  const route = useRoadRoute(path);
+  return (
+    <Polyline
+      positions={route}
+      pathOptions={{
+        color: path.color,
+        weight: 4,
+        opacity: selected ? 0.9 : 0.5,
+        lineCap: 'round',
+        lineJoin: 'round',
+      }}
+    />
+  );
+}
+
 function DayLayers({ paths, selectedDay }: { paths: DayPath[]; selectedDay: number | null }) {
   const map = useMap();
   const [zoom, setZoom] = useState(() => map.getZoom());
   useMapEvents({ zoomend: () => setZoom(map.getZoom()) });
+  const lastFitKey = useRef('');
 
-  // Labels always for a chosen day; in "all days" mode only when zoomed in
-  // enough for the pills not to pile on top of each other.
   const showLabels = selectedDay !== null || zoom >= 13;
 
   useEffect(() => {
+    const key = paths.map((p) => p.day).join(',');
+    if (key === lastFitKey.current) return;
+    lastFitKey.current = key;
     const pts = paths.flatMap((p) => p.points.map((pt) => [pt.lat, pt.lng] as [number, number]));
     if (pts.length) {
       map.fitBounds(L.latLngBounds(pts), { padding: [70, 70], maxZoom: 14 });
@@ -59,17 +120,7 @@ function DayLayers({ paths, selectedDay }: { paths: DayPath[]; selectedDay: numb
   return (
     <>
       {paths.map((path) => (
-        <Polyline
-          key={path.day}
-          positions={curvedPath(path.points)}
-          pathOptions={{
-            color: path.color,
-            weight: 3.5,
-            opacity: selectedDay ? 0.85 : 0.5,
-            lineCap: 'round',
-            lineJoin: 'round',
-          }}
-        />
+        <DayRoute key={path.day} path={path} selected={selectedDay !== null} />
       ))}
       {paths.flatMap((path) =>
         path.points.map((point, i) => (
@@ -109,7 +160,8 @@ export default function MapPage() {
           Маршрут по дням
         </h1>
         <p className="mt-4 text-[#4b5b47] dark:text-white/60 max-w-xl">
-          Каждый день — свой цвет и свои карточки. Выбери день, чтобы увидеть его маршрут крупно с подписями.
+          Каждый день — свой цвет и свои карточки, а линии идут по настоящим улицам. Выбери день, чтобы увидеть его
+          маршрут крупно с подписями.
         </p>
 
         {/* Day filter chips */}
@@ -165,10 +217,14 @@ export default function MapPage() {
                   className="flex items-center gap-3 text-sm bg-[#f6f8f5] dark:bg-white/5 rounded-xl px-4 py-3 border border-black/5 dark:border-white/10"
                 >
                   <span
-                    className="flex items-center justify-center w-8 h-8 rounded-xl text-base flex-shrink-0"
+                    className="flex items-center justify-center w-8 h-8 rounded-xl text-base flex-shrink-0 overflow-hidden"
                     style={{ background: `${path.color}22` }}
                   >
-                    {point.emoji}
+                    {point.image ? (
+                      <img src={point.image} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      point.emoji
+                    )}
                   </span>
                   <span className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold text-white flex-shrink-0" style={{ background: path.color }}>
                     {i + 1}
