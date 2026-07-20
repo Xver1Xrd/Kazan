@@ -307,10 +307,10 @@ export const DAY_PATHS: DayPath[] = [
     label: 'День 1 · прилёт',
     color: '#c9573f',
     points: [
-      { name: 'Аэропорт Казань (KZN)', lat: 55.6083, lng: 49.2787, emoji: '✈️' },
+      { name: 'Аэропорт Казань (KZN)', lat: 55.6083, lng: 49.2787, emoji: '✈️', image: '/points/airport.jpg' },
       { name: '«Тюбетей» на Баумана', lat: 55.7872, lng: 49.1232, emoji: '🫓' },
-      { name: 'Кремлёвская набережная', lat: 55.8027, lng: 49.1129, emoji: '🌅' },
-      { name: 'Дворец земледельцев', lat: 55.7988, lng: 49.1151, emoji: '🌳' },
+      { name: 'Кремлёвская набережная', lat: 55.8027, lng: 49.1129, emoji: '🌅', image: '/points/embankment.jpg' },
+      { name: 'Дворец земледельцев', lat: 55.7988, lng: 49.1151, emoji: '🌳', image: '/points/palace.jpg' },
     ],
   },
   {
@@ -318,9 +318,9 @@ export const DAY_PATHS: DayPath[] = [
     label: 'День 2 · Кремль',
     color: '#4b7a5a',
     points: [
-      { name: 'Казанский Кремль', lat: 55.7989, lng: 49.1064, emoji: '🏰' },
-      { name: 'Улица Баумана', lat: 55.7887, lng: 49.1225, emoji: '🚶' },
-      { name: 'Колокольня Богоявленского собора', lat: 55.7879, lng: 49.1229, emoji: '🔔' },
+      { name: 'Казанский Кремль', lat: 55.7989, lng: 49.1064, emoji: '🏰', image: '/points/kremlin.jpg' },
+      { name: 'Улица Баумана', lat: 55.7887, lng: 49.1225, emoji: '🚶', image: '/points/bauman.jpg' },
+      { name: 'Колокольня Богоявленского собора', lat: 55.7879, lng: 49.1229, emoji: '🔔', image: '/points/belltower.jpg' },
       { name: 'Ресторан «Авылым»', lat: 55.7995, lng: 49.1175, emoji: '🍲' },
     ],
   },
@@ -329,10 +329,10 @@ export const DAY_PATHS: DayPath[] = [
     label: 'День 3 · слобода',
     color: '#a9772f',
     points: [
-      { name: 'Старо-Татарская слобода', lat: 55.7793, lng: 49.1104, emoji: '🏘️' },
-      { name: 'Музей чак-чака', lat: 55.7765, lng: 49.1094, emoji: '🍯' },
-      { name: 'Озеро Кабан', lat: 55.7768, lng: 49.1181, emoji: '🌊' },
-      { name: 'Новый театр Камала', lat: 55.7712, lng: 49.1246, emoji: '🎭' },
+      { name: 'Старо-Татарская слобода', lat: 55.7793, lng: 49.1104, emoji: '🏘️', image: '/points/sloboda.jpg' },
+      { name: 'Музей чак-чака', lat: 55.7765, lng: 49.1094, emoji: '🍯', image: '/points/chakchak.jpg' },
+      { name: 'Озеро Кабан', lat: 55.7768, lng: 49.1181, emoji: '🌊', image: '/points/kaban.jpg' },
+      { name: 'Новый театр Камала', lat: 55.7712, lng: 49.1246, emoji: '🎭', image: '/points/kamal.jpg' },
     ],
   },
   {
@@ -340,8 +340,8 @@ export const DAY_PATHS: DayPath[] = [
     label: 'День 4 · Казанка',
     color: '#2f5266',
     points: [
-      { name: 'Аквапарк «Ривьера»', lat: 55.8255, lng: 49.0974, emoji: '💦' },
-      { name: 'Набережная Казанки и центр «Казан»', lat: 55.8157, lng: 49.1147, emoji: '🌇' },
+      { name: 'Аквапарк «Ривьера»', lat: 55.8255, lng: 49.0974, emoji: '💦', image: '/points/riviera.jpg' },
+      { name: 'Набережная Казанки и центр «Казан»', lat: 55.8157, lng: 49.1147, emoji: '🌇', image: '/points/kazan_center.jpg' },
     ],
   },
   {
@@ -349,8 +349,8 @@ export const DAY_PATHS: DayPath[] = [
     label: 'День 5 · вылет',
     color: '#7b6ca8',
     points: [
-      { name: 'Сувениры на Баумана', lat: 55.7887, lng: 49.1225, emoji: '🛍️' },
-      { name: 'Аэропорт Казань (KZN)', lat: 55.6083, lng: 49.2787, emoji: '✈️' },
+      { name: 'Сувениры на Баумана', lat: 55.7887, lng: 49.1225, emoji: '🛍️', image: '/points/bauman.jpg' },
+      { name: 'Аэропорт Казань (KZN)', lat: 55.6083, lng: 49.2787, emoji: '✈️', image: '/points/airport.jpg' },
     ],
   },
 ];
