@@ -41,6 +41,11 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: { cacheName: 'osm-tiles', expiration: { maxEntries: 200, maxAgeSeconds: 7 * 86400 } },
           },
+          {
+            urlPattern: /^https:\/\/router\.project-osrm\.org\/.*/,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'osrm-routes', expiration: { maxEntries: 20, maxAgeSeconds: 30 * 86400 } },
+          },
         ],
       },
     }),

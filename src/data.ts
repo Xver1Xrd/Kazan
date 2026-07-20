@@ -284,7 +284,14 @@ export type DayPoint = {
   name: string;
   lat: number;
   lng: number;
+  /** Fallback icon shown when no `image` is set */
   emoji: string;
+  /**
+   * Optional photo for the map marker. Put a file in `public/points/`
+   * (e.g. public/points/kremlin.jpg) and set image: '/points/kremlin.jpg'.
+   * When present, the photo is shown instead of the emoji.
+   */
+  image?: string;
 };
 
 export type DayPath = {
