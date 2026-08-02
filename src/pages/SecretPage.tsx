@@ -44,15 +44,14 @@ function Letter({ foundAt }: { foundAt?: number }) {
         ))}
       </div>
       <p className="mt-8 font-accent font-semibold text-xl text-[#c7e0cb]">{SECRET_LETTER.signature}</p>
-      <div className="mt-10 inline-flex flex-col items-center gap-1 rounded-2xl border border-white/15 bg-white/5 px-6 py-4">
-        <span className="text-[11px] uppercase tracking-[0.2em] text-[#a9cbad]">Официальный взломщик этого сердца</span>
-        {foundAt && (
+      {foundAt && (
+        <div className="mt-10 inline-flex flex-col items-center gap-1 rounded-2xl border border-white/15 bg-white/5 px-6 py-4">
           <span className="text-xs text-white/50">
-            найдено{' '}
+            открыто{' '}
             {new Date(foundAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
           </span>
-        )}
-      </div>
+        </div>
+      )}
     </motion.div>
   );
 }
