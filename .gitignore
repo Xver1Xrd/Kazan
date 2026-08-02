@@ -3,13 +3,3 @@ dist
 *.tsbuildinfo
 *.local
 .DS_Store
-
-# Python / bot
-__pycache__/
-*.pyc
-.venv/
-venv/
-.env
-data/
-*.db
-*.sqlite3
