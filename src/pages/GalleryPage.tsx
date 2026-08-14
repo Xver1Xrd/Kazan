@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, ImagePlus } from 'lucide-react';
 import { GALLERY_IDEAS } from '../data';
-import { PHOTOS } from '../photos';
+import type { Photo } from '../photos';
+import { useGalleryPhotos } from '../useGalleryPhotos';
 import Reveal from '../components/Reveal';
 import Lightbox from '../components/Lightbox';
+import PhotoUploader from '../components/PhotoUploader';
 
 const TONE_CLASSES: Record<string, string> = {
   sunset: 'from-[#f4a26a] to-[#c9573f]',
@@ -15,13 +17,13 @@ const TONE_CLASSES: Record<string, string> = {
   stone: 'from-[#a8a396] to-[#4b473d]',
 };
 
-function RealGallery() {
+function RealGallery({ photos }: { photos: Photo[] }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
 
   return (
     <>
       <div className="mt-12 columns-2 md:columns-3 gap-4 [&>*]:mb-4 [&>*]:break-inside-avoid">
-        {PHOTOS.map((photo, i) => (
+        {photos.map((photo, i) => (
           <Reveal key={photo.url} delay={(i % 6) * 0.05}>
             <button
               onClick={() => setLightbox(i)}
@@ -40,8 +42,23 @@ function RealGallery() {
           </Reveal>
         ))}
       </div>
-      <Lightbox photos={PHOTOS} index={lightbox} onClose={() => setLightbox(null)} onNavigate={setLightbox} />
+      <Lightbox photos={photos} index={lightbox} onClose={() => setLightbox(null)} onNavigate={setLightbox} />
     </>
+  );
+}
+
+/** Пока список фото не приехал с сервера — спокойные заглушки вместо прыжка вёрстки. */
+function GallerySkeleton() {
+  return (
+    <div className="mt-12 columns-2 md:columns-3 gap-4 [&>*]:mb-4 [&>*]:break-inside-avoid" aria-hidden>
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <div
+          key={i}
+          className="rounded-2xl bg-[#1f2a1d]/5 dark:bg-white/5 animate-pulse"
+          style={{ aspectRatio: i % 3 === 0 ? '3 / 4' : i % 3 === 1 ? '1 / 1' : '4 / 5' }}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -71,7 +88,8 @@ function PlaceholderGallery() {
 }
 
 export default function GalleryPage() {
-  const hasPhotos = PHOTOS.length > 0;
+  const { photos, loading } = useGalleryPhotos();
+  const hasPhotos = photos.length > 0;
 
   return (
     <motion.main
@@ -96,7 +114,9 @@ export default function GalleryPage() {
             : 'Поездка ещё впереди, настоящих фото пока нет — это список моментов, которые точно стоит поймать в кадр. После возвращения сюда встанут наши реальные снимки.'}
         </p>
 
-        {hasPhotos ? <RealGallery /> : <PlaceholderGallery />}
+        <PhotoUploader />
+
+        {hasPhotos ? <RealGallery photos={photos} /> : loading ? <GallerySkeleton /> : <PlaceholderGallery />}
       </div>
     </motion.main>
   );

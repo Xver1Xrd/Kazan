@@ -3,3 +3,6 @@ dist
 *.tsbuildinfo
 *.local
 .DS_Store
+
+# Фото, загруженные через /api/photos при локальной разработке
+public/uploads
