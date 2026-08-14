@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Camera } from 'lucide-react';
 import { GALLERY_IDEAS } from '../data';
-import { PHOTOS } from '../photos';
+import { useGalleryPhotos } from '../useGalleryPhotos';
 import Reveal from './Reveal';
 import SectionHeading from './SectionHeading';
 import TiltCard from './TiltCard';
@@ -16,7 +16,8 @@ const TONE_CLASSES: Record<string, string> = {
 };
 
 export default function GalleryTeaser() {
-  const hasPhotos = PHOTOS.length > 0;
+  const { photos } = useGalleryPhotos();
+  const hasPhotos = photos.length > 0;
   const preview = GALLERY_IDEAS.slice(0, 4);
 
   return (
@@ -45,7 +46,7 @@ export default function GalleryTeaser() {
 
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
           {hasPhotos
-            ? PHOTOS.slice(0, 4).map((photo, i) => (
+            ? photos.slice(0, 4).map((photo, i) => (
                 <Reveal key={photo.url} delay={i * 0.06}>
                   <TiltCard max={10} glare>
                     <div className="aspect-[3/4] rounded-3xl relative overflow-hidden">

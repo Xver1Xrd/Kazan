@@ -1,10 +1,38 @@
-import { defineConfig } from 'vite';
+import type { IncomingMessage, ServerResponse } from 'node:http';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import photosHandler from './api/photos';
+
+/**
+ * На проде `/api/photos` обслуживает serverless-функция Vercel. В `vite dev`
+ * и `vite preview` функций нет, поэтому тот же обработчик подключаем как
+ * middleware — фронтенд работает одинаково везде.
+ */
+function photosApi(): Plugin {
+  const middleware = (req: IncomingMessage, res: ServerResponse, next: () => void) => {
+    if (!req.url || new URL(req.url, 'http://localhost').pathname !== '/api/photos') {
+      next();
+      return;
+    }
+    void photosHandler(req, res);
+  };
+
+  return {
+    name: 'kazan:photos-api',
+    configureServer(server) {
+      server.middlewares.use(middleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware);
+    },
+  };
+}
 
 export default defineConfig({
   plugins: [
     react(),
+    photosApi(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
@@ -21,6 +49,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg}'],
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//, /^\/uploads\//],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         runtimeCaching: [
           {
@@ -29,6 +58,25 @@ export default defineConfig({
             options: {
               cacheName: 'weather',
               expiration: { maxEntries: 4, maxAgeSeconds: 6 * 3600 },
+            },
+          },
+          {
+            // Список загруженных фото: сначала сеть, офлайн — последний ответ.
+            urlPattern: /\/api\/photos(\?.*)?$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'gallery-index',
+              expiration: { maxEntries: 4, maxAgeSeconds: 7 * 86400 },
+            },
+          },
+          {
+            // Сами загруженные снимки неизменяемы — держим их в кэше.
+            urlPattern: /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\/uploads\/.*/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'gallery-photos',
+              expiration: { maxEntries: 300, maxAgeSeconds: 90 * 86400 },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
           {
