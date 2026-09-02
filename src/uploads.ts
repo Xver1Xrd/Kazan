@@ -165,3 +165,10 @@ export async function uploadPhoto(
 
   return send(JSON.stringify({ data, contentType: contentType || file.type, caption }), options.onProgress);
 }
+
+/** Удаляет загруженный снимок с сервера. */
+export async function deleteUploadedPhoto(id: string): Promise<void> {
+  const response = await fetch(`${ENDPOINT}/${id}`, { method: 'DELETE' });
+  if (response.status === 404) return; // уже удалено — не считаем ошибкой
+  if (!response.ok) throw new UploadError('Не удалось удалить фото. Попробуйте ещё раз.');
+}

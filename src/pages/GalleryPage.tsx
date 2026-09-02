@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import { Camera, ImagePlus } from 'lucide-react';
 import { GALLERY_IDEAS } from '../data';
 import type { Photo } from '../photos';
-import { useGalleryPhotos } from '../useGalleryPhotos';
+import { useGalleryPhotos, removeUploadedPhoto } from '../useGalleryPhotos';
+import type { UploadedPhoto } from '../uploads';
+import { deleteUploadedPhoto } from '../uploads';
 import Reveal from '../components/Reveal';
 import Lightbox from '../components/Lightbox';
 import PhotoUploader from '../components/PhotoUploader';
@@ -17,8 +19,18 @@ const TONE_CLASSES: Record<string, string> = {
   stone: 'from-[#a8a396] to-[#4b473d]',
 };
 
-function RealGallery({ photos }: { photos: Photo[] }) {
+function RealGallery({
+  photos,
+  uploaded,
+  onDelete,
+}: {
+  photos: Photo[];
+  uploaded: UploadedPhoto[];
+  onDelete: (index: number) => Promise<void>;
+}) {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  // Удалять можно только загруженные снимки (они идут в начале списка).
+  const deletable = photos.map((photo, i) => i >= 0 && i < uploaded.length && uploaded[i].url === photo.url);
 
   return (
     <>
@@ -42,7 +54,14 @@ function RealGallery({ photos }: { photos: Photo[] }) {
           </Reveal>
         ))}
       </div>
-      <Lightbox photos={photos} index={lightbox} onClose={() => setLightbox(null)} onNavigate={setLightbox} />
+      <Lightbox
+        photos={photos}
+        index={lightbox}
+        onClose={() => setLightbox(null)}
+        onNavigate={setLightbox}
+        deletable={deletable}
+        onDelete={onDelete}
+      />
     </>
   );
 }
@@ -88,8 +107,16 @@ function PlaceholderGallery() {
 }
 
 export default function GalleryPage() {
-  const { photos, loading } = useGalleryPhotos();
+  const { photos, uploaded, loading } = useGalleryPhotos();
   const hasPhotos = photos.length > 0;
+
+  const handleDelete = async (index: number) => {
+    const photo = photos[index];
+    const uploadedPhoto = uploaded[index];
+    if (!photo || !uploadedPhoto) return; // защита от рассинхрона
+    await deleteUploadedPhoto(uploadedPhoto.id);
+    removeUploadedPhoto(uploadedPhoto.id);
+  };
 
   return (
     <motion.main
@@ -116,7 +143,13 @@ export default function GalleryPage() {
 
         <PhotoUploader />
 
-        {hasPhotos ? <RealGallery photos={photos} /> : loading ? <GallerySkeleton /> : <PlaceholderGallery />}
+        {hasPhotos ? (
+          <RealGallery photos={photos} uploaded={uploaded} onDelete={handleDelete} />
+        ) : loading ? (
+          <GallerySkeleton />
+        ) : (
+          <PlaceholderGallery />
+        )}
       </div>
     </motion.main>
   );

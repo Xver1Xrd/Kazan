@@ -41,6 +41,11 @@ export function addUploadedPhoto(photo: UploadedPhoto): void {
   publish([photo, ...(cache ?? []).filter((item) => item.id !== photo.id)]);
 }
 
+/** Убирает удалённый снимок из списка сразу, без перезагрузки. */
+export function removeUploadedPhoto(id: string): void {
+  publish((cache ?? []).filter((item) => item.id !== id));
+}
+
 function load(): Promise<void> {
   pending ??= fetchUploadedPhotos()
     .then(publish)

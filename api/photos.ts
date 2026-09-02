@@ -14,7 +14,7 @@
  */
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { randomBytes } from 'node:crypto';
-import { mkdir, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export type UploadedPhoto = {
@@ -147,6 +147,45 @@ async function savePhoto(data: Buffer, contentType: string, caption: string): Pr
   return { ...meta, url: `/${PREFIX}/${fileName}` };
 }
 
+/**
+ * Удаляет снимок по id. По id восстанавливаем точное имя файла: ищем по
+ * (захешированным) именам в хранилище, чтобы не дырявить имена произвольными
+ * путями и не вырезать чужие файлы.
+ */
+async function deletePhoto(id: string): Promise<boolean> {
+  assertStorageConfigured();
+
+  if (useBlobStore) {
+    const { list, del } = await import('@vercel/blob');
+    const matches: string[] = [];
+    let cursor: string | undefined;
+    do {
+      const page = await list({ prefix: `${PREFIX}/`, limit: 1000, cursor });
+      for (const blob of page.blobs) {
+        const meta = parseFileName(blob.pathname.slice(PREFIX.length + 1));
+        if (meta && meta.id === id) matches.push(blob.pathname);
+      }
+      cursor = page.hasMore ? page.cursor : undefined;
+    } while (cursor);
+
+    if (matches.length === 0) return false;
+    await del(matches);
+    return true;
+  }
+
+  const dir = localUploadsDir();
+  let fileNames: string[];
+  try {
+    fileNames = await readdir(dir);
+  } catch {
+    return false; // папки нет — удалять нечего
+  }
+  const match = fileNames.find((name) => parseFileName(name)?.id === id);
+  if (!match) return false;
+  await unlink(path.join(dir, match));
+  return true;
+}
+
 /* -------------------------------- разбор -------------------------------- */
 
 async function readJsonBody(req: IncomingMessage): Promise<unknown> {
@@ -219,6 +258,26 @@ function sendJson(res: ServerResponse, status: number, payload: unknown): void {
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
   try {
+    const url = new URL(req.url ?? '/', 'http://localhost');
+    const idMatch = /^\/api\/photos\/([0-9a-z]+-[0-9a-f]+)$/.exec(url.pathname);
+    if (idMatch) {
+      if (req.method !== 'DELETE') {
+        res.setHeader('allow', 'DELETE');
+        sendJson(res, 405, { error: 'Метод не поддерживается.' });
+        return;
+      }
+      const removed = await deletePhoto(idMatch[1]);
+      if (!removed) throw new HttpError(404, 'Фото не найдено.');
+      sendJson(res, 200, { ok: true });
+      return;
+    }
+
+    if (url.pathname !== '/api/photos') {
+      res.statusCode = 404;
+      res.end();
+      return;
+    }
+
     if (req.method === 'GET') {
       sendJson(res, 200, { photos: await listPhotos() });
       return;
